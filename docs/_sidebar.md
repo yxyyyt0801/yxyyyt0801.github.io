@@ -27,3 +27,13 @@
     - [Nexus配置](tool/nexus/nexus_config)
   - Gradle
     - [Gradle配置](tool/gradle/gradle_config)
+  - Maven
+    - [Maven配置](tool/maven/maven_config)
+  - Typora
+    - [Typora配置](tool/typora/typora_config)
+  - iTerm
+    - [iTerm概述](tool/iterm/iterm_overview)
+  - Linux
+    - [Linux命令](tool/linux/linux_command)
+  - Nginx
+    - [Nginx概述](tool/nginx/nginx_overview)
