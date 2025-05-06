@@ -7,4 +7,9 @@
     - [Git命令](tool/git/git_command)
     - [Github开发规范](tool/git/git_dev_standards)
     - [Github贡献](tool/git/git_contribution)
-    - [Git 问题](tool/git/git_problem)
+    - [Git问题](tool/git/git_problem)
+  - VMware
+    - [VMware安装环境](tool/vmware/vmware_install_env)
+    - [VMware初始化环境](tool/vmware/vmware_init_env)
+    - [VMware安装软件](tool/vmware/vmware_install_software)
+    - [VMware问题](tool/vmware/vmware_problem)
