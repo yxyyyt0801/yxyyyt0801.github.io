@@ -23,3 +23,7 @@
     - [IDEA配置](tool/intellij_idea/idea_config)
     - [IDEA快捷键](tool/intellij_idea/idea_shortcut_key)
     - [IDEA问题](tool/intellij_idea/idea_problem)
+  - Nexus
+    - [Nexus配置](tool/nexus/nexus_config)
+  - Gradle
+    - [Gradle配置](tool/gradle/gradle_config)
