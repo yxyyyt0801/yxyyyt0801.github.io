@@ -19,3 +19,7 @@
     - [Dockerfile脚本](tool/docker/docker_file_script)
     - [Docker镜像](tool/docker/docker_image)
     - [Docker问题](tool/docker/docker_problem)
+  - IntelliJ IDEA
+    - [IDEA配置](tool/intellij_idea/idea_config)
+    - [IDEA快捷键](tool/intellij_idea/idea_shortcut_key)
+    - [IDEA问题](tool/intellij_idea/idea_problem)
