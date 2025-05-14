@@ -56,7 +56,7 @@
   
     ```shell
     cd goldmine-admin
-    git remote add origin git@github.com:yxy063x/goldmine-admin.git
+    git remote add origin git@github.com:yxyyyt0801/goldmine-admin.git
     git push -u origin main -f
     
     git checkout -b develop main
