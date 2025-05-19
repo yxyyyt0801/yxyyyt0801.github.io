@@ -9,3 +9,28 @@
   - 如果两个对象的hashCode 值相等并且equals()方法也返回 true，才认为这两个对象相等。
 
   - 如果两个对象的hashCode 值不相等，就可以直接认为这两个对象不相等。
+  
+- JDK 动态代理实现原理
+
+  运行时修改、生成字节码，可读性差
+
+  ```java
+  // Proxy 的静态方法
+  	// 生成代理 class
+  	// 实例化代理 class，传入参数InvocationHandler
+  public static Object newProxyInstance(ClassLoader loader,
+                                            Class<?>[] interfaces,
+                                            InvocationHandler h)
+  
+  // KeyFactory 负责通过提供的接口获取Key
+  // ProxyClassFactory 负责委托 ProxyGenerator 生成代理字节码，并加载到类加载器
+  	// ProxyGenerator生成符合规则的字节码
+  	// 类名生成规则 com.sun.proxy.$Proxy0
+  // WeakCache具有缓存 class 能力
+  private static final WeakCache<ClassLoader, Class<?>[], Class<?>>
+          proxyClassCache = new WeakCache<>(new KeyFactory(), new ProxyClassFactory());
+  ```
+  
+  
+  
+  
