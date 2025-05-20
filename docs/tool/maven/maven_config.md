@@ -25,3 +25,13 @@ settings.xml
 
 - MAVEN_HOME    D:\install\apache-maven-3.6.3
 - Path    %MAVEN_HOME%\bin
+
+
+
+# 验证
+
+```shell
+# 配置完成后，需要重启控制台
+mvn -v
+```
+
