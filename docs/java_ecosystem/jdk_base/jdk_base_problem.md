@@ -9,7 +9,9 @@
   - 如果两个对象的hashCode 值相等并且equals()方法也返回 true，才认为这两个对象相等。
 
   - 如果两个对象的hashCode 值不相等，就可以直接认为这两个对象不相等。
-  
+
+
+
 - JDK 动态代理实现原理
 
   运行时修改、生成字节码，可读性差
@@ -30,7 +32,12 @@
   private static final WeakCache<ClassLoader, Class<?>[], Class<?>>
           proxyClassCache = new WeakCache<>(new KeyFactory(), new ProxyClassFactory());
   ```
-  
-  
-  
+
+
+
+
+- ServiceLoader性能低在哪里？
+
+  从ServiceLoader中获取接口的实现时，只能通过遍历的方式，会遍历接口配置文件中的所有实现类，**加载实现类（未初始化）并实例化**。
+
   
