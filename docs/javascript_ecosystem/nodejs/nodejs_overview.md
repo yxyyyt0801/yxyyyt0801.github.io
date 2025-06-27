@@ -1,6 +1,6 @@
 # 安装
 
-## 升级NodeJS
+## MAC 升级NodeJS
 
 ```shell
 # 清除nodejs的cache
@@ -26,6 +26,14 @@ sudo n 16.20.2
 
 
 
+## Windows 安装NodeJS
+
+下载网站 https://nodejs.org/zh-cn/download
+
+安装 / 卸载 node-v16.20.2-x64.msi
+
+
+
 ## 配置镜像源
 
 ```shell
@@ -38,8 +46,3 @@ npm config set registry https://registry.npmmirror.com
 
 npm config get registry
 ```
-
-
-
-
-
