@@ -1,5 +1,10 @@
 - ☕️ Java 生态
   - JDK基础
+    - [JVM核心技术](java_ecosystem/jdk_base/jvm_core)
+    - [字节码分析](java_ecosystem/jdk_base/bytecode_analysis)
+    - [内存分析调优](java_ecosystem/jdk_base/memory_analysis_and_optimization)
+    - [JDK源码分析](java_ecosystem/jdk_base/jdk_source_code_analysis)
+    - [JDK工具](java_ecosystem/jdk_base/jdk_tools)
     - [JDK基础问题](java_ecosystem/jdk_base/jdk_base_problem)
 - 🍒 JavaScript 生态
   - JavaScript
