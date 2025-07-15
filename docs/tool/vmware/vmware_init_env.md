@@ -54,7 +54,7 @@ SELINUX=disabled
 ```shell
 vi /etc/hostname
 
-test100
+dev
 ```
 
 
@@ -64,7 +64,7 @@ test100
 ```shell
 vi /etc/hosts
 
-192.168.8.100 test100
+192.168.8.100 dev
 ```
 
 

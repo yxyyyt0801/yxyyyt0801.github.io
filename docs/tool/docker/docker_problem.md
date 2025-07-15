@@ -69,3 +69,28 @@
       - 启动tunnelblick，删除tunnelblick原来的配置
   
   
+  
+- 无法下载镜像，Error response from daemon: Get "https://registry-1.docker.io/v2/": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)；
+
+  ```shell
+  # 超时异常
+  curl -v https://registry-1.docker.io/v2/
+  
+  # 配置加速源
+  mkdir -p /etc/docker
+  vi /etc/docker/daemon.json
+  {
+  	"registry-mirrors":[
+  		"https://docker.m.daocloud.io",
+  		"https://iicvml23.mirror.aliyuncs.com"
+  	]
+  }
+  
+  
+  sudo systemctl daemon-reload
+  sudo systemctl restart docker
+  # 检查配置
+  docker info
+  ```
+  
+  
