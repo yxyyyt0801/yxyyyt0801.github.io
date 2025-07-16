@@ -5,6 +5,7 @@
     - [内存分析调优](java_ecosystem/jdk_base/memory_analysis_and_optimization)
     - [JDK源码分析](java_ecosystem/jdk_base/jdk_source_code_analysis)
     - [JDK工具](java_ecosystem/jdk_base/jdk_tools)
+    - [NIO模型](java_ecosystem/jdk_base/nio_model)
     - [JDK基础问题](java_ecosystem/jdk_base/jdk_base_problem)
 - 🧰 数据库
   - MySQL
