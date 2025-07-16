@@ -6,6 +6,12 @@
     - [JDK源码分析](java_ecosystem/jdk_base/jdk_source_code_analysis)
     - [JDK工具](java_ecosystem/jdk_base/jdk_tools)
     - [JDK基础问题](java_ecosystem/jdk_base/jdk_base_problem)
+- 🧰 数据库
+  - MySQL
+    - [MySQL安装](database/mysql/mysql_install)
+    - [MySQL核心技术](database/mysql/mysql_core)
+    - [MySQL实战](database/mysql/mysql_practice)
+    - [SQL50题](database/mysql/sql_50_subject)
 - 🍒 JavaScript 生态
   - JavaScript
     - [JavaScript概述](javascript_ecosystem/javascript/javascript_overview)
