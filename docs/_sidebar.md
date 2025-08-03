@@ -8,6 +8,8 @@
     - [NIO模型](java_ecosystem/jdk_base/nio_model)
     - [多线程编程](java_ecosystem/jdk_base/multithread)
     - [JDK基础问题](java_ecosystem/jdk_base/jdk_base_problem)
+  - Mybatis
+    - [Mybatis源码分析](java_ecosystem/mybatis/mybatis_code_analysis)
 - 🧰 数据库
   - MySQL
     - [MySQL安装](database/mysql/mysql_install)
