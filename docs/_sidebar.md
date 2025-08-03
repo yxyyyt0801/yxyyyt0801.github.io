@@ -10,6 +10,8 @@
     - [JDK基础问题](java_ecosystem/jdk_base/jdk_base_problem)
   - Mybatis
     - [Mybatis源码分析](java_ecosystem/mybatis/mybatis_code_analysis)
+  - Netty
+    - [Netty核心与源码解析](java_ecosystem/netty/netty_code_analysis)
 - 🧰 数据库
   - MySQL
     - [MySQL安装](database/mysql/mysql_install)
