@@ -363,4 +363,27 @@ new Vue({
   <p>Message is: {{ message }}</p>
   ```
 
-  
+
+
+
+# 调试
+
+## 使用 WebStorm 调试 vue 项目
+
+```javascript
+// vue.config.js 增加
+module.exports = {
+ configureWebpack: {
+   devtool: 'source-map'
+ }
+}
+
+// 启动项目
+npm run dev
+
+// 编辑配置
+// url 设置上一步的地址，如：http://localhost:1234/
+// 设置断点
+// 调试
+debug
+```
