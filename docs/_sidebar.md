@@ -30,6 +30,9 @@
     - [Redis概述](database/redis/redis_overview)
     - [Redis核心技术](database/redis/redis_core)
     - [Redis 交互命令](database/redis/redis_command)
+  - Elasticsearch
+    - [Elasticsearch安装部署](database/elasticsearch/elasticsearch_install)
+    - [Elasticsearch入门](database/elasticsearch/elasticsearch_overview)
 - 🍒 JavaScript 生态
   - JavaScript
     - [JavaScript概述](javascript_ecosystem/javascript/javascript_overview)
