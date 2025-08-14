@@ -25,6 +25,11 @@
     - [MySQL核心技术](database/mysql/mysql_core)
     - [MySQL实战](database/mysql/mysql_practice)
     - [SQL50题](database/mysql/sql_50_subject)
+  - Redis
+    - [Redis安装](database/redis/redis_install)
+    - [Redis概述](database/redis/redis_overview)
+    - [Redis核心技术](database/redis/redis_core)
+    - [Redis 交互命令](database/redis/redis_command)
 - 🍒 JavaScript 生态
   - JavaScript
     - [JavaScript概述](javascript_ecosystem/javascript/javascript_overview)
