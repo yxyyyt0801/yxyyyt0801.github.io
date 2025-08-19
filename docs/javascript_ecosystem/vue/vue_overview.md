@@ -14,26 +14,13 @@
 
   ```shell
   # 进入创建目标项目的父级目录
-  vue create goldmine-admin
+  vue create xbuy-admin
   
-  # 预设选择
-  	- Please pick a preset: Manually select features
-  	- Check the features needed for your project: Babel, PWA, Router, Vuex, CSS Pre-processors, Linter, Unit, E2E
-  	- Choose a version of Vue.js that you want to start the project with 2.x
-  	- Use history mode for router? (Requires proper server setup for index fallback in production) Yes
-  	- Pick a CSS pre-processor (PostCSS, Autoprefixer and CSS Modules are supported by default): Sass/SCSS (with dart-sass)
-  	- Pick a linter / formatter config: Prettier
-  	- Pick additional lint features: Lint on save
-  	- Pick a unit testing solution: Jest
-  	- Pick an E2E testing solution: Cypress
-  	- Where do you prefer placing config for Babel, ESLint, etc.? In dedicated config files
-  	- Save this as a preset for future projects? Yes
-  	- Save preset as: test
-  # 预设选择之后再创建项目时，直接加载test预设配置
-  # vue create --preset test goldmine-admin
+  # 如果目标项目不为空，则选择 Overwrite；会修改.git，注意提前备份
   
   # 选择系统预设 Default ([Vue 2] babel, eslint)
-  overwrite
+  
+  # 替换原 .git
   ```
   
   
