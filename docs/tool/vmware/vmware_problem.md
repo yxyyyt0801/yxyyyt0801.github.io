@@ -20,17 +20,14 @@
   
   # 更换镜像源
   vi /etc/yum.repos.d/CentOS-Base.repo
-  # 注释 4 个 mirrorlist，取消注释 更换 baseurl
+  # 注释 4 个 mirrorlist，更换 4 个 baseurl
   baseurl=http://mirrors.aliyun.com/centos/$releasever/os/$basearch/
   baseurl=http://mirrors.aliyun.com/centos/$releasever/updates/$basearch/
   baseurl=http://mirrors.aliyun.com/centos/$releasever/extras/$basearch/
   baseurl=http://mirrors.aliyun.com/centos/$releasever/centosplus/$basearch/
-  
-  # 修改 DNS
-  vi /etc/resolv.conf
-  8.8.8.8
-  8.8.4.4
   ```
-
   
+- Could not fetch/save url https://download.docker.com/linux/centos/docker-ce.repo to file /etc/yum.repos.d/docker-ce.repo: [Errno 14] curl#35 - "TCP connection reset by peer"
+
+  网络连接不稳定，多尝试几次。
 
