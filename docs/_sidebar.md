@@ -44,6 +44,10 @@
     - [Vue问题](javascript_ecosystem/vue/vue_problem)
   - NodeJS
     - [NodeJS概述](javascript_ecosystem/nodejs/nodejs_overview)
+- ⚙️ 中间件
+  - ZooKeeper
+    - [ZooKeeper分布式协调框架](component/zookeeper/zookeeper_overview)
+    - [ZooKeeper集群安装部署](jdk_lib/zookeeper/zookeeper_install)
 - 🛠️ 工具
   - Docsify
     - [Docsify配置](tool/docsify/docsify_config)
