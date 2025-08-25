@@ -54,8 +54,20 @@
 - ⚙️ 中间件
   - ZooKeeper
     - [ZooKeeper分布式协调框架](component/zookeeper/zookeeper_overview)
-    - [ZooKeeper集群安装部署](jdk_lib/zookeeper/zookeeper_install)
-- 🛠️ 工具
+    - [ZooKeeper集群安装部署](component/zookeeper/zookeeper_install)
+  - Kafka
+       * [Kafka分布式消息流平台](component/kafka/kafka_overview)
+       * [Kafka集群安装部署](component/kafka/kafka_install)
+       * [Kafka监控工具](component/kafka/kafka_monitor)
+  - RabbitMQ
+       * [RabbitMQ安装部署](component/rabbitmq/rabbitmq_install)
+       * [RabbitMQ入门](component/rabbitmq/rabbitmq_overview)
+  - RocketMQ
+       * [消息队列高手实战](component/rocketmq/rocketmq_practice)
+       * [RocketMQ安装部署](component/rocketmq/rocketmq_install)
+       * [RocketMQ核心功能原理](component/rocketmq/rocketmq_core)
+       * [RocketMQ源码分析](component/rocketmq/rocketmq_code_analysis)
+- 🛺 工具
   - Docsify
     - [Docsify配置](tool/docsify/docsify_config)
     - [Docsify问题](tool/docsify/docsify_problem)
