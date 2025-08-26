@@ -84,8 +84,8 @@ git checkout -b release-0.1.0 develop
 ## Finish the release
 
 ```shell
-git pull origin master
-git checkout master
+git pull origin main
+git checkout main
 git merge --no-ff release-0.1.0
 git push
 
@@ -97,10 +97,10 @@ git push
 # 删除本地release分支
 git branch -d release-0.1.0
 # 删除远程release分支（如有）
-git push origin --delete release-0.1.0
+# git push origin --delete release-0.1.0
 
 # 给当前master版本打上tag（必须输入message版本信息）
-git tag -a v0.1.0 master
+git tag -a v0.1.0 main
 # 提交到远程
 git push --tags
 ```
