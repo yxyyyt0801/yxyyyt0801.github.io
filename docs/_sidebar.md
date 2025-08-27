@@ -70,6 +70,8 @@
 - 🐣 项目
   - xdfs
     - [xdfs 分布式小文件系统详细设计 v0.1.0](project/xdfs/xdfs_dd_v0.1.0)
+    - [xdfs 分布式小文件系统详细设计 v0.2.0（ING）](project/xdfs/xdfs_dd_v0.2.0)
+    - [xdfs 分布式小文件系统详细设计 v0.3.0（PLAN）](project/xdfs/xdfs_dd_v0.3.0)
 - 🛺 工具
   - Docsify
     - [Docsify配置](tool/docsify/docsify_config)
