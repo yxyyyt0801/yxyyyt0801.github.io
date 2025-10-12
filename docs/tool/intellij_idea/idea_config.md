@@ -32,8 +32,6 @@
 
 - Settings | Editor | File and Code Templates
 
-  - 选中 files | class
-
   - 选中 includes | file header 在最右边的输入框输入注释模板
 
     ```java
