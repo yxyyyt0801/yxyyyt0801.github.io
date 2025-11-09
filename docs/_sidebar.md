@@ -67,6 +67,11 @@
        * [RocketMQ安装部署](component/rocketmq/rocketmq_install)
        * [RocketMQ核心功能原理](component/rocketmq/rocketmq_core)
        * [RocketMQ源码分析](component/rocketmq/rocketmq_code_analysis)
+- 🐣 项目
+  - xdfs
+    - [xdfs 分布式文件系统详细设计 v0.1.0](project/xdfs/xdfs_dd_v0.1.0.md)
+    - [xdfs 分布式文件系统详细设计 v0.2.0（ING）](project/xdfs/xdfs_dd_v0.2.0.md)
+    - [xdfs 分布式文件系统详细设计 v0.3.0（PLAN）](project/xdfs/xdfs_dd_v0.3.0.md)
 - 🪇 小程序开发
 - 🛺 工具
   - Docsify
