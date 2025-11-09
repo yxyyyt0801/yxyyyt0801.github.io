@@ -69,10 +69,12 @@
        * [RocketMQ源码分析](component/rocketmq/rocketmq_code_analysis)
 - 🐣 项目
   - xdfs
-    - [xdfs 分布式文件系统详细设计 v0.1.0](project/xdfs/xdfs_dd_v0.1.0.md)
-    - [xdfs 分布式文件系统详细设计 v0.2.0（ING）](project/xdfs/xdfs_dd_v0.2.0.md)
-    - [xdfs 分布式文件系统详细设计 v0.3.0（PLAN）](project/xdfs/xdfs_dd_v0.3.0.md)
-- 🪇 小程序开发
+    - [xdfs 分布式文件系统详细设计 v0.1.0](project/xdfs/xdfs_dd_v0.1.0)
+    - [xdfs 分布式文件系统详细设计 v0.2.0（ING）](project/xdfs/xdfs_dd_v0.2.0)
+    - [xdfs 分布式文件系统详细设计 v0.3.0（PLAN）](project/xdfs/xdfs_dd_v0.3.0)
+- 🪇 小程序
+  - uni-app
+    - [uni-app问题](applet/uni_app/uni_app_problem)
 - 🛺 工具
   - Docsify
     - [Docsify配置](tool/docsify/docsify_config)
