@@ -114,3 +114,5 @@
     - [Linux命令](tool/linux/linux_command)
   - Nginx
     - [Nginx概述](tool/nginx/nginx_overview)
+  - Blender
+    - [Blender动画](tool/blender/blender_anim)
