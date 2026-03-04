@@ -114,8 +114,4 @@
     - [Linux命令](tool/linux/linux_command)
   - Nginx
     - [Nginx概述](tool/nginx/nginx_overview)
-- 🖌️ 绘画&动画
-  - Blender
-    - [Blender概述](anim/blender/blender_overview)
-  - OpenToonz
-    - [OpenToonz概述](anim/opentoonz/opentoonz_overview)
+
