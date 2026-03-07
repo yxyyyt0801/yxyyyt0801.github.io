@@ -14,7 +14,7 @@
     - [Netty核心与源码解析](java_ecosystem/netty/netty_code_analysis)
   - WebMagic
     - [WebMagic源码解析](java_ecosystem/webmagic/webmagic_code_analysis)
-- 🫘 spring 体系
+- 🫘 Spring 体系
   - Core
     - [Spring源码分析](spring/core/code_analysis)
     - [SpringCore核心功能](spring/core/spring_core)
@@ -67,11 +67,16 @@
        * [RocketMQ安装部署](component/rocketmq/rocketmq_install)
        * [RocketMQ核心功能原理](component/rocketmq/rocketmq_core)
        * [RocketMQ源码分析](component/rocketmq/rocketmq_code_analysis)
+- 🍇 分布式架构
+  - 小马哥Java分布式训练营
+    - [服务治理](dist/xiaomage_java_distributed_systems_bootcamp/service_governance)
+
 - 🐣 项目
   - xdfs
     - [xdfs 分布式文件系统详细设计 v0.1.0](project/xdfs/xdfs_dd_v0.1.0)
     - [xdfs 分布式文件系统详细设计 v0.2.0（ING）](project/xdfs/xdfs_dd_v0.2.0)
     - [xdfs 分布式文件系统详细设计 v0.3.0（PLAN）](project/xdfs/xdfs_dd_v0.3.0)
+  - Goldmine
 - 🪇 小程序
   - uni-app
     - [uni-app问题](applet/uni_app/uni_app_problem)
