@@ -15,7 +15,7 @@
   - WebMagic
     - [WebMagic源码解析](java_ecosystem/webmagic/webmagic_code_analysis)
 - 🫘 Spring 体系
-  - Core
+  - SpringCore
     - [Spring源码分析](spring/core/code_analysis)
     - [SpringCore核心功能](spring/core/spring_core)
     - [SpringMVC核心功能](spring/core/spring_mvc)
@@ -29,7 +29,29 @@
     - [Nacos源码分析](spring/springcloudalibaba/nacos_code_analysis)
     - [Seata源码分析](spring/springcloudalibaba/seata_code_analysis)
     - [Sentinel源码分析](spring/springcloudalibaba/sentinel_code_analysis)
+- 🛠️ 构建
+
+  - Git
+    - [Git配置](build/git/git_config)
+    - [Git命令](build/git/git_command)
+    - [Github开发规范](build/git/git_dev_standards)
+    - [Github贡献](build/git/git_contribution)
+    - [Git问题](build/git/git_problem)
+  - Maven
+    - [Maven配置](build/maven/maven_config)
+    - [Maven概述](build/maven/maven_overview)
+  - Gradle
+    - [Gradle配置](build/gradle/gradle_config)
+  - Docker
+    - [Docker概述](build/docker/docker_overview)
+    - [Docker命令](build/docker/docker_command)
+    - [Dockerfile脚本](build/docker/docker_file_script)
+    - [Docker镜像](build/docker/docker_image)
+    - [Docker问题](build/docker/docker_problem)
+  - Nexus
+    - [Nexus配置](build/nexus/nexus_config)
 - 🧰 数据库
+
   - MySQL
     - [MySQL安装](database/mysql/mysql_install)
     - [MySQL核心技术](database/mysql/mysql_core)
@@ -69,8 +91,7 @@
        * [RocketMQ源码分析](component/rocketmq/rocketmq_code_analysis)
 - 🍇 分布式架构
   - 小马哥Java分布式训练营
-    - [服务治理](dist/xiaomage_java_distributed_systems_bootcamp/service_governance)
-
+    - [服务治理](distributed_system/xiaomage_java_distributed_systems_bootcamp/service_governance)
 - 🐣 项目
   - xdfs
     - [xdfs 分布式文件系统详细设计 v0.1.0](project/xdfs/xdfs_dd_v0.1.0)
@@ -84,34 +105,15 @@
   - Docsify
     - [Docsify配置](tool/docsify/docsify_config)
     - [Docsify问题](tool/docsify/docsify_problem)
-  - Git
-    - [Git配置](tool/git/git_config)
-    - [Git命令](tool/git/git_command)
-    - [Github开发规范](tool/git/git_dev_standards)
-    - [Github贡献](tool/git/git_contribution)
-    - [Git问题](tool/git/git_problem)
   - VMware
     - [VMware安装环境](tool/vmware/vmware_install_env)
     - [VMware初始化环境](tool/vmware/vmware_init_env)
     - [VMware安装软件](tool/vmware/vmware_install_software)
     - [VMware问题](tool/vmware/vmware_problem)
-  - Docker
-    - [Docker概述](tool/docker/docker_overview)
-    - [Docker命令](tool/docker/docker_command)
-    - [Dockerfile脚本](tool/docker/docker_file_script)
-    - [Docker镜像](tool/docker/docker_image)
-    - [Docker问题](tool/docker/docker_problem)
   - IntelliJ IDEA
     - [IDEA配置](tool/intellij_idea/idea_config)
     - [IDEA快捷键](tool/intellij_idea/idea_shortcut_key)
     - [IDEA问题](tool/intellij_idea/idea_problem)
-  - Nexus
-    - [Nexus配置](tool/nexus/nexus_config)
-  - Gradle
-    - [Gradle配置](tool/gradle/gradle_config)
-  - Maven
-    - [Maven配置](tool/maven/maven_config)
-    - [Maven概述](tool/maven/maven_overview)
   - Typora
     - [Typora配置](tool/typora/typora_config)
   - iTerm
