@@ -1497,3 +1497,32 @@ tar -tzvf test.tar.gz
 mkdir t1 & tar -xzvf test.tar.gz -C t1
 ```
 
+
+
+## 其他命令
+
+### lsof
+
+```shell
+# LiSt Open Files（列出打开的文件）
+# select IPv[46] files 查看指定端口的连接
+lsof -i :18323
+```
+
+
+
+### pwdx 
+
+```shell
+# Print Working Directory of X（打印指定进程的工作目录）
+pwdx 14699
+```
+
+
+
+
+
+
+
+
+
