@@ -32,6 +32,23 @@
 
 ### 服务注册
 
+- 服务提供者 & 服务消费者
+  - 服务提供者
+    - spring.application.name 服务名，用于注册到Nacos
+    - 依赖 
+      - spring-cloud-starter-alibaba-nacos-discovery（**注册**）
+        - 只要在项目中引入了 spring-cloud-starter-alibaba-nacos-discovery 依赖，应用默认会自动启用并注册到注册中心。不需要加注解 `@EnableDiscoveryClient`
+
+  - 服务消费者
+    - 添加注解
+      - @EnableFeignClients(basePackages = "com.example.consumer.feign")
+
+    - 路径：注意如果有 **server.servlet.context-path**，则需要作为请求路径的前缀
+    - 依赖
+      - spring-cloud-starter-alibaba-nacos-discovery（**发现**）
+      - spring-cloud-starter-openfeign
+      - spring-cloud-starter-loadbalancer  负载均衡（Spring Cloud 2020+ 必需）
+
 - 命名空间：环境隔离
 - 服务
   - 一个服务可以有多个实例
@@ -65,10 +82,31 @@
 
 ### 动态配置
 
-- 命名空间
-- Data id：一份配置文件，一般对应一个服务
-- Group
-- 归属应用
+- 基本概念，**唯一性**：只有 `Namespace + Group + Data ID`完全相同时，才会被认为是同一个配置。
+
+  - Namespace
+
+    - 最高级别的隔离，常用于区分环境（如开发、测试、生产）
+
+    - Group
+      - 在 Namespace 下的逻辑分组，用于区分业务模块
+
+
+  - Data id：一份配置文件，一般对应一个服务
+    - 具体的配置文件名称，是配置的最小单元
+
+
+- Data ID 的命名格式
+  - ${prefix}-${spring.profiles.active}.${file-extension}
+    - ${prefix}
+      - spring.application.name 微服务应用名
+    - ${spring.profiles.active}
+      - 环境标识
+    - ${file-extension}
+      - 文件扩展名
+
+- 依赖
+  - spring-cloud-starter-alibaba-nacos-config
 
 
 
