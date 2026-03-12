@@ -210,8 +210,20 @@
 ### 方法论
 
 - DDD
+
+  - （Domain-Driven Design，领域驱动设计）将软件系统的核心逻辑与业务领域（Domain）紧密结合，通过建立统一的业务语言（Ubiquitous Language）来指导设计和开发。
+
 - TDD
+
+  - （Test-Driven Development，测试驱动开发）先写测试，再写代码，然后重构，遵循严格的“红灯-绿灯-重构”循环。
+    - 红灯肯定不通过、绿灯不管实现尽快通过、重构最小化实现业务需求
+
 - BDD
+
+  - （Behavior-Driven Development，行为驱动开发）是一种**敏捷软件开发方法**，它强调**从用户行为视角**来定义需求、编写测试和开发代码。
+
+    简单来说，它把TDD（测试驱动开发）的“技术语言”升级成了**“业务语言”**，让开发人员、测试人员和产品经理能用同一套“剧本”沟通。
+
 
 
 
@@ -269,8 +281,12 @@
     - spring-boot-starter
 
 - web（Web主项目工程）
+  - 目录结构
+    - XxxApplication
+    - controller（实现 API 接口）
+    - exception
   - 引导类 - main class
-  - 构建 - Spring Boot  Maven Plugin
+  - 构建 - Spring Boot  Maven Plugin（fat jar）
     - spirng-boot-maven-plugin
   - 技术栈
     - spirng-boot-starter-web
@@ -364,43 +380,389 @@
 
 # RESTAPI设计
 
+## REST API 服务端设计
+
+### 服务端API模型设计
+
+- 定义统一的REST请求和响应API模型；
+- 媒体格式（内容）：JSON
+
+- API请求模型设计
+
+  - 模型对象 T
+
+  - API请求模型：ApiRequest、Request、RequestVO、T 等
+
+
+- API响应模型设计
+  - 模型对象 T，code，message
+
+
+- API业务代码设计
+  - 模拟 HTTP status code（参考 HttpStatus）
+    - int code（int 必须有值）
+    - String message（支持国际化）
+
+
+
+
+### 服务端API校验设计
+
+依赖：validation-api、spring-webmvc
+
+- Spring WebMVC 校验
+  - 推荐使用 Bean Validation 扩展
+    - Bean Validation 是一个 Java 标准规范，用于通过注解对数据模型（Bean）进行验证。它的实现最常见的是 Hibernate Validator。
+  - 不推荐使用 Spring Web MVC 自定义扩展，和Spring mvc 强耦合
+    - 扩展 HandlerMethodArgumentResolver 
+    - BindingResult 
+    - @CurrentUser
+
+
+
+### 服务端API异常处理
+
+推荐使用：@RestControllerAdvice 全局处理异常
+
+RequestResponseBodyMethodProcessor ： 正常 @RestController 处理方法参数和方法返回对象
+
+
+
+**Spring Web MVC 核心流程**
+
+1. DispatcherServlet 处理 HTTP 请求（符合 Servlet Mapping 规范）
+2. 通过 HTTP 请求（匹配条件）寻找 Handler
+   1. 逻辑实现：通过多个 HandlerMapping（根据优先级排序）去寻找最匹配的 HandlerExecutionChain 对象
+   2. HandlerExecutionChain：由一个 Handler（主要 HanderMethod） + N 个 HanderInterceptor
+      1. 匹配条件：请求 URI、请求头，请求参数等
+      2. Handler： 最常见的对象为 HandlerMethod
+      3. HandlerMethod：最常见的场景是 @Controller  或 @RestController Bean 定义的 @RequestMapping 方法
+      4. HandlerInterceptor：Handler 拦截器
+3. 通过 Handler 找到合适的 HandlerAdapter 对象
+   1. 最常见的场景：@RequestMapping 场景，Handler -> HanderMethod
+4. 执行 HandlerAdapter 方法，将 Handler 作为参数对象，执行结果适配 ModelAndView
+   1. 方法执行：执行业务逻辑，返回 OOP 对象（可能是：@Controller 中模板路径地址，或者 @RestController POJO 对象）
+      1. 如果是  @RestController 处理的话，ModelAndView 的 View 不会被渲染，在处理过程中就已经被写入到了 HTTP Response
+      2. 如果是 @Controller 的话，会执行 View 渲染
+5. 将 ModelAndView 转化成 HTTP Response Message
+
+
+
+### 服务端API POJO 通讯
+
+实现接口HandlerMethodReturnValueHandler包装返回POPO，统一适配响应结果，隐形包装
+
+然后通过配置类，添加到RequestMappingHandlerAdapter（注意放到HandlerMethodReturnValueHandler列表的最前边）
+
+
+
+### 服务端API幂等性
+
+常规实现：Redis 判断请求 Token 是否在 Redis 存在，如果存在的话，其他请求被拦截
+
+通用实现：继承OncePerRequestFilter，HttpSession 与 Redis 打通，利用 Spring Session，HttpSession#setAttribute 它底层利用 Redis Hash
+
+- **一句话解释**：`OncePerRequestFilter`的 **“Once”** 是为了解决 **Servlet 容器中因请求转发导致过滤器重复执行的问题**，它通过请求属性标记机制，确保在单个 HTTP 请求的完整生命周期内，过滤器的核心逻辑只运行一次。
+
+  **最佳实践**：在 Spring 应用中，**几乎所有的自定义过滤器都应该继承 `OncePerRequestFilter`**，而不是直接实现 `Filter`接口，除非你明确需要处理多次执行的情况。这是 Spring Security、Spring Session 等官方组件的标准做法。
+
+
+
+### 服务端多版本API实现
+
+基于 Spring WebMVC 实现多版本 API 并行，实现 API 版本平滑升级。
+
+```java
+@PostMapping(value = "/user/register", produces = "application/json;v=3") // V3
+Boolean registerUser(@RequestBody @Validated @Valid User user) throws UserException;
+
+@PostMapping(value = "/user/register", produces = "application/json;v=3.1") // V3.1
+default Boolean registerUserV31(@RequestBody @Validated @Valid User user) throws UserException {
+	// default 方法确保源码兼容（代码兼容）
+    // v3.1 的实现有个别 v3
+    return false;
+}
+```
+
+
+
+## REST API 客户端设计
+
+### 客户端 API 校验
+
+基于 Spring RestTemplate、Spring WebClient  以及 Spring Cloud Open Feign 整合 Bean Validation，实现 REST API 客户端校验
+
+
+
+### 客户端 API  异常处理
+
+基于 Spring RestTemplate、Spring WebClient  以及 Spring Cloud Open Feign 实现统一异常处理，并预留国际化文案扩展
+
+
+
+### 客户端 API  POJO 通讯
+
+基于 Spring Cloud Open Feign 隐形包装 POJO 成为 API 模型，实现接口编程友好性目的
+
+
+
+### 客户端多版本 API 调用
+
+基于 Java 接口实现多版本 API 调用，达到 API 平滑升级的目的
+
 
 
 # 站点国际化设计
+
+## 站点国际化设计
+
+### 国际化基础
+
+简介 JDK 和 Spring 国际化的同异，分析 Spring WebMVC 国际化实现
+
+
+
+### 易用性设计
+
+提供易用国际化 API，替代 JDK 和 Spring 国际化 API 
+
+
+
+### 可配置设计
+
+实现国际化文案配置化，优雅地处理字符编码问题
+
+
+
+### 高性能设计
+
+提供高性能国际化文案，提升国际化文案读取性能，以及解决传统 JDK 以及 Spring 文案格式化性能瓶颈
+
+
+
+### 热部署设计
+
+支持国际化文案热部署，实时获取内容变更，实现线程安全
+
+
+
+## 站点国际化整合
+
+### 服务端 REST API  国际化整合
+
+无缝整合国际化 API 与 REST API 模型，实现应用程序零修改
+
+
+
+### 客户端 REST API 国际化整合
+
+Spring Cloud Open Feign 整合
+
+
+
+### 模板引擎整合
+
+Spring Web 模板
+
+
+
+### Bean Validation 整合
+
+Bean Validation（Hibernate Validator）国际化整合
 
 
 
 # Web服务器容错性设计
 
+## 基于 Apache Tomcat 实现 Web 服务容错性
+
+### Tomcat 线程模型
+
+结合 Java AQS 和 线程池等基础，理解Tomcat 线程模型
+
+
+
+### Tomcat 核心组件
+
+理解 Tomcat 网络连接，协议处理等核心组件，掌握 Spring Boot 对其管控细节
+
+
+
+### Tomcat 限流
+
+利用 JMX 和 Tomcat API 实现全局 Web 服务限流
+
+
+
+## 基于 Resilience4j 实现 Web 服务容错性
+
+### Resilience4j 基础
+
+掌握服务 CircuitBreaker、Bulkhead 以及 RateLimiter 等模块特性以及核心 API 使用
+
+
+
+### Resilience4j Servlet 整合 
+
+基于 Resilience4j API 实现 Servlet 熔断、限流等特性
+
+
+
+### Resilience4j Spring WebMVC 整合
+
+基于 Resilience4j API 实现 Spring WebMVC 熔断、限流等特性
+
+
+
+### Resilience4j  Spring WebFlux 整合
+
+基于 Resilience4j API 实现Spring WebFlux 熔断、限流等特性
+
 
 
 # 服务容错性高阶设计
+
+## Resilience4j  整合第三方框架
+
+- Resilience4j Spring Cloud Open Feign 扩展：基于 Resilience4j 实现通用 Spring Cloud Open Feign 熔断、限流等功能
+- Resilience4j  MyBatis 扩展：基于 Resilience4j 实现 MyBatis  熔断、限流等功能
+- Resilience4j Redis 扩展：基于 Resilience4j  实现 Spring Redis 熔断、限流等功能
+
+
+
+## 服务容错性动态变更设计
+
+- Spring Cloud Config 动态变更：理解 Spring Cloud Config 与 Spring Boot @ConfigurationProperties Bean 动态绑定的关系
+- 动态 Tomcat 组件更新：使用 Spring Cloud Config 实现动态 Tomcat 组件更新
+- 动态 Resilience4j 组件更新：使用 Spring Cloud Config 实现动态 Resilience4j 组件更新
 
 
 
 # 服务柔性负载均衡设计
 
+## 基于监控指标的负载均衡实现
+
+- 核心监控指标：掌握 CPU 使用率、系统负载（Load）、线程状态（Threading）、响应时间（RT）、QPS 以及 TPS 等核心指标
+- Netflix Servo：理解 Netflix Servo 架构和监控指标组件
+- 上报监控指标：基于 Spring Cloud 服务注册接口实现监控指标上报
+- 负载均衡实现：基于 Netflix Servo 监控指标实现 Spring Cloud Netflix Ribbon（老版本）负载均衡策略
+
+
+
+## 基于动态权重的负载均衡实现
+
+- 动态权重算法：基于服务实例启动时间（uptime） 以及初始化权重，动态计算权重值
+- 元数据上报：基于 Spring Cloud 服务注册接口实现服务实例启动时间（uptime）以及初始化权重数据上报
+- 负载均衡实现：基于 动态权重算法 实现 Spring Cloud LoadBalancer（新版本）负载均衡策略
+
+
+
+# 服务监控基础
+
+## Micrometer 基础
+
+- 指标核心概念：理解指标基本类型 - Timer, Counter, Gauge, DistributionSummary 等，以及指标 Tags
+- Micrometer 核心 API：掌握 Timer, Counter, Gauge, DistributionSummary，MeterBinder，MeterRegistry 等 API 使用和底层原理
+- Micrometer 内建 Binder：讨论 Micrometer 内建 Binder，包括 JVM 、Kafka、Logging、系统、Tomcat 等
+
+
+
+## Micrometer 整合第三方框架
+
+- Micrometer 适配 Netflix Ribbon 监控指标：适配 Ribbon 内部 Servo 监控指标到 Micrometer 方式
+- Micrometer 整合 Redis Spring：Redis Spring API 监控指标注册到 MeterRegistry
+- Micrometer 整合 MyBatis ：基于 MyBatis Plug-in 机制将监控指标注册到 MeterRegistry
+- Micrometer 整合 JDBC：基于 JDBC 核心 API 将监控指标注册到 MeterRegistry
+
 
 
 # 服务监控平台设计
+
+## 基于 Pull 方式指标监控平台设计
+
+- Prometheus  Endpoint：讨论 Spring Boot Actautor Prometheus  Endpoint 与 Micrometer 适配细节
+- Prometheus 平台搭建：Prometheus 使用 Spring Cloud 注册中心发现服务实例，并拉取应用 Metrics 数据
+- Grafana  平台搭建：整合 Prometheus 数据源，构建 Java 应用监控指标图形化
+
+
+
+## 基于 Push 方式指标监控平台设计
+
+- Prometheus Pushgateway 搭建：搭建 Prometheus Pushgateway，为 Java 应用推送指标做准备
+- Micrometer Prometheus 注册中心：掌握 Micrometer Prometheus 注册中心使用方法，了解基本底层实现
+- Micrometer InfluxDB 注册中心：切换 Micrometer  InfluxDB 注册中心，了解两种时序数据库的差异
+- 指标监控平台混合模式：掌握 Pull 和 Push 监控数据混搭模式
 
 
 
 # 服务链路追踪设计
 
+## 基于 Java 应用层追踪服务链路
+
+- Spring Cloud Sleuth 引入：借助 Spring Cloud Sleuth 组件理解 Java 应用层服务链路追踪基本架构
+- Spring Cloud Sleuth 核心 API：理解 Tracer、Span 等 API 基本使用方法
+- Spring Cloud Sleuth 第三方整合：使用 Span API 整合第三方框架，如 MyBatis、Redis 等
+
+
+
+## 基于 Java Instrument 追踪服务链路重构
+
+- Java Instrument 机制：理解 Java Instrument 机制，并掌握字节码提升编程
+- Web 服务链路重构：基于字节码提升工具 Spring Cloud Open Feign 以及 Spring WebMVC 
+- 第三方服务链路重构：重构 Redis、JDBC 以及 MyBatis 服务链路实现
+
 
 
 # 服务网关整合设计
+
+## 服务网关稳定性设计
+
+- 网关容错性设计：Spring Cloud Gateway 结合 Resilience4j 实现熔断和限流
+- 网关柔性设计：Spring Cloud Gateway 整合柔性 LoadBalancer 实现
+
+
+
+## 服务网关可观测性设计
+
+- 网关监控设计：Spring Cloud Gateway 整合 Micrometer 实现指标监控
+- 网关链路跟踪设计：Spring Cloud Gateway 整合 Spring Cloud Slueth 实现链路跟踪
 
 
 
 # 服务性能优化
 
+## Spring Web 性能优化
+
+-  Spring AOP 优化：集合 Spring Web 场景使用静态代理替换 Spring AOP 代理对象
+-  Spring Web 组件优化：优化非必需 Web 组件，减少计算时间和内存开销
+-  Spring Web 缓存优化：Spring WebMVC REST Request Body 和 Response Body 对象缓存优化，减少重复序列化和反序列化计算
+-  Spring Web REST 序列化/反序列化：提升 REST 序列化/反序列化性能，减少不必要的计算
+
+
+
+## Spring Cloud 性能优化
+
+- @RefreshScope 优化：替换 @RefreshScope 实现，减少 Spring 应用上下文停顿的风险
+- Spring Cloud OpenFeign 优化：提升 REST 序列化/反序列化性能，提高 HTTP 传输效率，减少负载均衡计算消耗
+- Spring Cloud 配置优化：失效 Bootstrap 应用上下文，优化配置读取实现，避免 System Properties 并发锁阻塞等问题
+
 
 
 # 工程脚手架定制
 
+## Spring 脚手架运用、架构与定制
 
+- Spring 脚手架搭建：在本地和测试环境搭建 Spring 脚手架，并了解 CI/CD 环境中的注意事项
+- Spring 脚手架架构：了解 Spring Start 与 Spring Initialzr 之间的关系，掌握 Spring Initialzr  各个模块的职责以及它们之间的联系
+- Spring 脚手架定制：根据基础框架和业务组件的 BOM 以及依赖信息，定制它们的模块
+
+
+
+## Spring 脚手架原理、实现与扩展
+
+- Spring 脚手架原理：理解 Spring Initialzr 工程构建的实现原理，包括：项目元信息、Project 子应用上下文以及 Web Endpoints
+- Spring 脚手架实现：理解 Spring Initialzr 底层实现，包括：Maven 构建系统，代码生成原理以及元信息处理
+- Spring 脚手架扩展：根据项目依赖组件实现多模块和动态 Maven 业务模板工程
 
 
 
