@@ -123,12 +123,60 @@ mvn dependency:analyze
   - source、target   指定 Java 版本：配置源代码和目标字节码版本
   - annotationProcessorPaths   注解处理：支持编译时注解处理器
   - compilerArgs   编译器选项：传递自定义参数给 Java 编译器
+  
 - maven-resources-plugin 
   - nonFilteredFileExtensions   默认情况下，Maven 会对资源文件（如 `.properties`, `.xml`, `.txt`等）进行过滤，替换其中的 Maven 属性或项目属性。但某些文件（如二进制文件：图片、压缩包、已编译的类文件等）不应被处理，否则可能会损坏文件内容。`nonFilteredFileExtensions`允许你指定哪些文件扩展名应被排除在过滤过程之外。
+  
+- maven-deploy-plugin
+  
+  负责将项目构建产物（jar/war/pom 等）部署到远程仓库。它是执行 `mvn deploy`命令时默认调用的插件。
+  
 - apt-maven-plugin
   - generate-sources   在编译前自动运行注解处理器，生成额外的源代码（如 MapStruct、Lombok、JPA 元模型等），并将生成的源代码正确添加到项目的编译路径中。**推荐使用 maven-compiler-plugin 通过 `<annotationProcessorPaths>` 配置注解处理器**。
+  
 - spring-boot-maven-plugin
   - repackage   会在 Maven 的 `package`阶段之后执行，将标准的 Maven 构建输出（如普通的 JAR 文件）**重新打包**成可执行的 Spring Boot JAR（或 WAR）文件。默认会将原始的 Maven 构件重命名为 `*.jar.original`
+  
+- flatten-maven-plugin
+
+  - 用于解决多模块项目在发布（deploy）或安装（install）时，因版本占位符（如 `${revision}`）未被解析而导致的依赖无法下载问题。
+
+    ```xml
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <!-- 是否更新POM文件，通常设为true -->
+                    <updatePomFile>true</updatePomFile>
+                    <!-- 扁平化模式：推荐使用，仅解析CI友好变量 -->
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    ```
+
+    
+
 
 
 
