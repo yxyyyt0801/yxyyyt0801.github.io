@@ -50,6 +50,8 @@
     - [Docker问题](build/docker/docker_problem)
   - Nexus
     - [Nexus配置](build/nexus/nexus_config)
+  - WSL
+    - [WSL配置](build/wsl/wsl_config)
 - 🧰 数据库
 
   - MySQL
@@ -98,6 +100,7 @@
     - [xdfs 分布式文件系统详细设计 v0.2.0（ING）](project/xdfs/xdfs_dd_v0.2.0)
     - [xdfs 分布式文件系统详细设计 v0.3.0（PLAN）](project/xdfs/xdfs_dd_v0.3.0)
   - Goldmine
+    - [goldmine 详细设计 v0.1.0](project/goldmine/goldmine_dd_v0.1.0)
 - 🪇 小程序
   - uni-app
     - [uni-app问题](applet/uni_app/uni_app_problem)
