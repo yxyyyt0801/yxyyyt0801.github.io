@@ -46,22 +46,6 @@
 
 # 插件
 
-- jclasslib Bytecode viewer
-
-  反编译插件
-
-- Scala
-
-  Scala 插件
-
-- CFR Decompile
-
-  Scala 反编译插件
-
 - Git Commit Message Helper
 
   Git 格式化提交消息插件
-  
-- Gitee
-
-  Gitee插件
