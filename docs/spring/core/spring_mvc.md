@@ -9,10 +9,13 @@
 
 - @Validated
   - 当注解在在方法参数上时，和 @Valid 语义一致，用来处理 @RequestBody 注解的方法参数
-  - 当注解在类上时，可以处理 @RequestParam 和 @PathVariable 注解，同 javax.validation.constraints 注解联合使用
+  - 校验方法参数（简单类型）
+    - 当注解在类上时，可以处理 @RequestParam 和 @PathVariable 注解，同 javax.validation.constraints 注解联合使用
   - 支持group分组验证
 - @Valid
   - 当注解在属性上时，可以用于校验父对象时的级联校验
+  - 需要嵌套校验时（必须用 @Valid）
+  - 方法返回对象属性校验
 
 
 
@@ -39,3 +42,9 @@
   ```
 
   
+
+# 问题
+
+- 在@SpringBootTest测试时，service 层 @Validated 不起作用
+
+  服务没有生成代理。测试类需要增加注解@EnableAutoConfiguration
