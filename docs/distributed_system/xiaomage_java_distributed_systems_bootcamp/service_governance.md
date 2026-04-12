@@ -211,7 +211,7 @@
 
 - DDD
 
-  - （Domain-Driven Design，领域驱动设计）将软件系统的核心逻辑与业务领域（Domain）紧密结合，通过建立统一的业务语言（Ubiquitous Language）来指导设计和开发。
+  - （Domain-Driven Design，领域驱动设计）将软件系统的核心逻辑与业务领域（Domain）紧密结合，通过建立统一的业务语言来指导设计和开发。
 
 - TDD
 
@@ -491,6 +491,119 @@ default Boolean registerUserV31(@RequestBody @Validated @Valid User user) throws
 ### 客户端 API 校验
 
 基于 Spring RestTemplate、Spring WebClient  以及 Spring Cloud Open Feign 整合 Bean Validation，实现 REST API 客户端校验
+
+
+
+#### Spring RestTemplate 面向资源
+
+JAX-RS WebClient
+HTTP 资源 -> POJO
+面向资源 -> 面向对象
+
+使用场景
+
+- 普通 Java EE 场景，面向资源处理，以面向对象编程 
+- Spring Cloud RestTemplate 在负载均衡提升
+
+```java
+RestTemplate restTemplate = ...;
+
+restTemplate.getForObject("http://user-service/users",List.class);
+```
+
+
+
+反向场景
+
+Spring WebMVC
+核心 HTTP 消息转化器 - HttpMessageConverter
+
+
+
+**扩展点**
+
+**HttpMessageConverter**
+
+用于 HTTP Message 序列化和反序列化
+
+
+
+**ClientHttpRequestFactory** 无状态
+
+偏向于底层 HTTP Client 通讯
+代表实现：
+
+- 拦截（Delegating、包装、装饰器） - InterceptingClientHttpRequestFactory，依赖底层  ClientHttpRequestFactory 以及 ClientHttpRequestInterceptor
+  - Interceptor1 start
+    - Interceptor2 start
+      - Interceptor3 start
+        - Interceptor4 start
+          - Implementation		
+        - Interceptor4 end
+      - Interceptor3 end
+    - Interceptor2 end	
+  - Interceptor1 end
+- 底层
+  - JDK HttpURLConnection - SimpleClientHttpRequestFactory（默认）
+  - Apache HttpComponents HttpClient - HttpComponentsClientHttpRequestFactory
+  - OkHttp3 - OkHttp3ClientHttpRequestFactory
+
+
+
+**ClientHttpRequestInterceptor**
+
+HTTP Client 请求执行拦截
+
+
+
+基本模式（client端）
+
+- HTTP 请求：HTTP 请求头、请求主体
+- HTTP 请求处理
+  - 序列化：POJO  -> HTTP Message
+  - 前置处理：请求传输前
+  - 请求传输：HTTP Client 实现
+- HTTP 响应处理
+  - 反序列化：HTTP Message -> POJO
+  - 后置处理：客户端返回结果前
+
+
+
+性能优化
+
+序列化/反序列化优化
+
+基于 HttpMessageConverter 优化：
+
+- 底层优化，比如使用 FastJSON 或者其他实现
+- 减少 REST POJO 对象反序列化选项，比如设定一个或两个 HttpMessageConverter  实现，FastJsonHttpMessageConverter
+
+
+
+HTTP Client 底层实现优化
+
+- HTTP Components
+- OkHttp3
+
+
+
+相关议题
+
+Spring Template 类模式（命令模式）
+
+XXXTemplate 通常实现 XXXOperations、
+
+
+
+#### Spring WebClient
+
+#### Spring Cloud Open Feign
+
+
+
+
+
+
 
 
 
