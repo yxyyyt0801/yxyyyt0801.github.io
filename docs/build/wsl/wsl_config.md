@@ -39,6 +39,36 @@ wsl --import Ubuntu-24.04 "D:\data\wsl\ubuntu" "D:\data\wsl\Ubuntu-24.04.bak.tar
 
 
 
+# 换源
+
+```shell
+# 基于Ubuntu 24.04
+
+# 备份
+sudo cp /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sources.bak
+
+# 清空文件
+sudo truncate -s 0 /etc/apt/sources.list.d/ubuntu.sources
+
+# 写入阿里云镜像源
+echo "Types: deb
+URIs: https://mirrors.aliyun.com/ubuntu/
+Suites: noble noble-updates noble-backports
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+Types: deb
+URIs: https://mirrors.aliyun.com/ubuntu/
+Suites: noble-security
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg" | sudo tee /etc/apt/sources.list.d/ubuntu.sources
+
+# 更新索引
+sudo apt update
+```
+
+
+
 # 基本操作
 
 ```shell
@@ -76,5 +106,13 @@ sudo usermod -aG docker $USER
 
 # 必须完全退出 Ubuntu 终端，然后重新打开
 exit
+```
+
+
+
+## JDK
+
+```shell
+sudo apt install openjdk-8-jdk
 ```
 
