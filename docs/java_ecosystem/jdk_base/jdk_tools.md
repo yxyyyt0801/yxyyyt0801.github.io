@@ -52,7 +52,7 @@ jinfo <pid>
 
 
 
-## jstat*
+## jstat*（堆监控）
 
 Jvm statistics monitoring tool
 
@@ -60,14 +60,15 @@ Monitors Java Virtual Machine (JVM) statistics. This command is experimental and
 
 `-gc` 需要重点关注OU（老年代的使用量）、YGCT（年轻代GC消耗的总时间）、FGCT（Full GC 消耗的时间）
 
-- jstat -gc
-- jstat -gcutil
+- jstat -gc  容量和占用情况
+- jstat -gcutil  占用百分比
 
 ```shell
 # -gcutil Displays a summary about garbage collection statistics. 已使用空间占比
 # 1000 间隔时间 默认毫秒
 # 3 显示次数
 # -t 第一列显示自启动以来的时间戳，单位秒
+# jstat -gcutil -t 7534  1000 3
 jstat -gcutil -t <pid> 1000 3
 
 # S0: Survivor space 0 utilization as a percentage of the space's current capacity.
@@ -90,6 +91,9 @@ jstat -gcutil -t <pid> 1000 3
 # -gc Garbage-collected heap statistics. 监视java堆
 # jstat -gc -t 7534  1000 3
 jstat -gc -t <pid> 1000 3
+
+# C 容量
+# U 使用量
 
 # S0C: Current survivor space 0 capacity (kB).
 # S1C: Current survivor space 1 capacity (kB).
