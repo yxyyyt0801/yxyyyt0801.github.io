@@ -52,7 +52,7 @@ jinfo <pid>
 
 
 
-## jstat*（堆监控）
+## jstat（堆监控）
 
 Jvm statistics monitoring tool
 
@@ -62,6 +62,8 @@ Monitors Java Virtual Machine (JVM) statistics. This command is experimental and
 
 - jstat -gc  容量和占用情况
 - jstat -gcutil  占用百分比
+  - jstat -gcutil 26299 1s
+
 
 ```shell
 # -gcutil Displays a summary about garbage collection statistics. 已使用空间占比
@@ -120,7 +122,7 @@ Timestamp        S0C    S1C    S0U    S1U      EC       EU        OC         OU 
 
 
 
-## jmap
+## jmap（生成堆转储、查看对象直方图）
 
 Memory map for java
 
@@ -128,7 +130,12 @@ Prints shared object memory maps or heap memory details for a process, core file
 
 - jmap -heap
 - jmap -histo
-- jmap -dump
+  - `jmap -histo:live <pid> | head -20` 发现大对象直方图
+
+- **jmap -dump**
+  - `jmap -dump:format=b,file=heap.hprof <pid>`
+  - `jmap -dump:live,format=b,file=heap.hprof <pid>` 只转储存活对象
+
 
 ```shell
 # -heap 打印堆内存的配置和使用信息
@@ -186,11 +193,13 @@ jmap -dump:format=b,file=7534.hprof 7534
 
 
 
-## jstack
+## jstack（线程使用情况）
 
 Prints Java thread stack traces for a Java process, core file, or remote debug server. This command is experimental and unsupported.
 
 - jstack -l
+  - `jstack <pid> | grep -A 10 "BLOCKED"`
+
 
 ```shell
 # 长列表模式，将线程相关的locks信息一起输出，比如持有的锁，等待的锁
@@ -199,7 +208,7 @@ jstack -l 7534
 
 
 
-## jcmd*
+## jcmd
 
 Sends diagnostic command requests to a running Java Virtual Machine (JVM).
 
@@ -223,7 +232,7 @@ jrunscript
 
 
 
-## jhat*
+## jhat
 
 Java Heap Analysis Tool 内存Dump分析工具
 
@@ -242,6 +251,64 @@ Field Type对应表
 | Z                  | boolean    |          |
 | [                  | reference  | 一维数组 |
 | [[                 | reference  | 二维数组 |
+
+
+
+## MAT（堆内存分析）
+
+Memory Analyzer Tool
+
+**MAT** 是Eclipse基金会开发的**Java堆内存分析神器**，用于分析和排查Java应用的内存问题，如内存泄漏、大对象占用等。
+
+
+
+支持的堆转储格式
+
+```shell
+# 常见堆转储格式
+.hprof           # JDK原生格式
+.phd             # IBM格式
+.dmp             # IBM Dump格式
+.bin             # 二进制格式
+```
+
+
+
+OQL (Object Query Language)
+
+```sql
+-- 查找大数组 -- >10MB
+SELECT * FROM byte[] WHERE @retainedHeapSize > 10485760
+SELECT * FROM java.util.ArrayList WHERE elementData.@length > 10000
+SELECT * FROM java.util.HashMap WHERE table.@length > 65536
+
+-- 查找占用内存最多的前10个数组
+SELECT TOP 10 * FROM byte[] ORDER BY @retainedHeapSize DESC
+
+-- 查找特定类的实例
+SELECT * FROM com.example.User WHERE age > 30
+
+-- 查找空集合
+SELECT * FROM java.util.ArrayList WHERE size = 0
+
+-- 查找重复字符串
+SELECT s, COUNT(s) AS cnt 
+FROM java.lang.String s 
+GROUP BY s.toString() 
+HAVING cnt > 10 
+ORDER BY cnt DESC
+
+-- 查找线程局部变量
+SELECT * FROM INSTANCEOF java.lang.ThreadLocal
+WHERE value.@retainedHeapSize > 1024000
+
+-- 查找ThreadLocal
+SELECT * FROM INSTANCEOF java.lang.ThreadLocal
+WHERE value != null
+
+```
+
+
 
 
 
