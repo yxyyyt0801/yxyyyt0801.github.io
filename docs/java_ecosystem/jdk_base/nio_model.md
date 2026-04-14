@@ -1072,3 +1072,93 @@ Reactor模型包含两个组件：
 
 
 
+
+
+## NIO 内存映射
+
+### 工作原理
+
+1. **建立映射**：调用 `map()`时，操作系统在进程虚拟地址空间创建映射区域
+2. **按需加载**：访问映射区域时，如果对应页不在内存，触发**缺页中断**
+3. **透明访问**：操作系统自动从磁盘加载对应页到内存
+4. **延迟写回**：修改的数据会被标记为脏页，稍后由操作系统写回磁盘
+
+
+
+### 三种映射模式
+
+```java
+// 1. 只读模式
+MappedByteBuffer readOnlyBuffer = channel.map(
+    FileChannel.MapMode.READ_ONLY, 0, fileSize);
+
+// 2. 读写模式  进程间共享
+MappedByteBuffer readWriteBuffer = channel.map(
+    FileChannel.MapMode.READ_WRITE, 0, fileSize);
+
+// 3. 私有模式（Copy-on-Write）
+MappedByteBuffer privateBuffer = channel.map(
+    FileChannel.MapMode.PRIVATE, 0, fileSize);
+```
+
+
+
+### API
+
+- `sourceChannel.transferTo(0, sourceChannel.size(), targetChannel);`
+- `channel.map(FileChannel.MapMode.PRIVATE, 0, fileSize);`
+
+
+
+### I/O 为什么是四次拷贝和四次上下文切换
+
+**四次拷贝**：
+
+- 第1次：磁盘 → 磁盘控制器缓冲区（DMA）
+- 第2次：磁盘控制器缓冲区 → 内核缓冲区 Page Cache（DMA）
+- 第3次：Page Cache → 内核临时缓冲区（CPU）
+- 第4次：内核临时缓冲区 → 用户缓冲区（CPU）
+
+
+
+**四次上下文切换**：
+
+- 第1次：用户态 → 内核态（调用 read()）
+- 第2次：内核态 → 用户态（read() 返回）
+- 第3次：用户态 → 内核态（调用 write()）
+- 第4次：内核态 → 用户态（write() 返回）
+
+
+
+### 内存映射大小限制
+
+32位系统的限制（1.5-2GB）
+
+总地址空间 = 2^32 = 4,294,967,296 字节 = 4GB
+用户空间 = 通常 3GB = 3,221,225,472 字节
+内核空间 = 通常 1GB = 1,073,741,824 字节
+
+```shell
+总用户空间: 3.0 GB
+减去:
+- 保留区域: 0.1 GB (NULL指针保护等)
+- 栈: 0.01 GB
+- 共享库: 0.2 GB
+- 其他映射: 0.1 GB
+- ASLR预留空间: 0.2 GB
+= 2.39 GB 理论可用
+
+但堆需要空间：
+- 如果堆分配 1.0 GB
+- 剩下: 1.39 GB
+
+还要考虑：
+- 内存碎片: 可能损失 0.1-0.2 GB
+- 页表开销: 少量
+- 对齐要求: 少量
+
+最终: 1.2-1.5 GB
+典型值: 1.4 GB
+```
+
+1.4GB 是 32 位系统在典型配置（**1.5GB最大堆**、ASLR启用、标准库加载）下的实际限制，由地址空间总量、必须的占用、堆内存、ASLR、碎片等因素共同决定。
