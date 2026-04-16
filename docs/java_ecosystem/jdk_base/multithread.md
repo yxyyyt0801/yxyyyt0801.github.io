@@ -982,7 +982,7 @@ waitStatus状态值
 
 
 
-## 独占锁流程分析ƒ
+## 独占锁流程分析
 
 ![concurrency_aqs_acquire_release](multithread.assets/concurrency_aqs_acquire_release.png)
 
@@ -1011,7 +1011,7 @@ waitStatus状态值
      - 如果Node节点的前驱节点waitStatus是SIGNAL（-1）可以安全阻塞Node节点线程，向下执行5
 
 5. 执行 `parkAndCheckInterrupt` 阻塞当前线程
-   - `LockSupport.park` 申请许可，默认情况初始是0，因此阻塞当前线程；可以响应unpark和interrupt，从阻塞状态恢复，但不会抛出中断异常，只是记录在自旋等待过程中是否被中断过，继续执行4自旋获取锁
+   - `LockSupport.park` 申请许可，默认情况初始是0，因此阻塞当前线程；可以响应unpark和interrupt，**从阻塞状态恢复，但不会抛出中断异常**，只是记录在自旋等待过程中是否被中断过，继续执行4自旋获取锁
      - 如果成功获取到锁后，并在等待过程中断过，调用 `Thread.currentThread().interrupt()` 重新登记中断标识
 
 6. 客户端线程调用 `release` 释放锁
