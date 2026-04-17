@@ -29,7 +29,15 @@
 
 # 命令
 
+版本号：x.y.z
+
+- x，y 是 develop 版本
+- z 是 hotifx 版本
+
 ## create develop branch
+
+- main: 0.1.0
+- develop: 0.1.0-SNAPSHOT
 
 ```shell
 # 以main为基准创建develop分支，并切换到develop分支
@@ -75,6 +83,10 @@ git push origin --delete some-feature
 
 ## Start new release
 
+- main: 0.1.0
+- develop: 0.2.0-SNAPSHOT（马上修改develop分支版本，并行开发）
+- release: 0.2.0
+
 ```shell
 git checkout -b release-0.1.0 develop
 ```
@@ -82,6 +94,9 @@ git checkout -b release-0.1.0 develop
 
 
 ## Finish the release
+
+- main:0.2.0（更新版本，以release分支版本为准）
+- develop: 0.2.0-SNAPSHOT（冲突，以develop分支版本为准）
 
 ```shell
 git pull origin main
