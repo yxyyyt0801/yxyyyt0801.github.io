@@ -139,42 +139,38 @@ mvn dependency:analyze
   
 - flatten-maven-plugin
 
-  - 用于解决多模块项目在发布（deploy）或安装（install）时，因版本占位符（如 `${revision}`）未被解析而导致的依赖无法下载问题。
+  - 用于解决多模块项目在发布（deploy）或安装（install）时，因版本占位符（如 `${revision}`）未被解析而导致的依赖无法下载问题。本地、远程仓库的pom是去占位符的。
 
+  - 扁平化pom，去除 `<parent>` 节点；代替所有占位符，如依赖的 ``
+  
     ```xml
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <configuration>
-                    <!-- 是否更新POM文件，通常设为true -->
-                    <updatePomFile>true</updatePomFile>
-                    <!-- 扁平化模式：推荐使用，仅解析CI友好变量 -->
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+    <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <configuration>
+                        <updatePomFile>true</updatePomFile>
+                        <flattenMode>oss</flattenMode>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>flatten</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>flatten</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>flatten.clean</id>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>clean</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
     </build>
     ```
-
+    
     
 
 
