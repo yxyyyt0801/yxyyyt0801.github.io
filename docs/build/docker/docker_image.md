@@ -1,13 +1,21 @@
-# 下载镜像
+# 创建共用网络
 
-## MySQL
+创建共用网络，容器内网络通讯互相访问
+
+```shell
+docker network create goldmine-net
+```
+
+
+
+# MySQL
 
 ```shell
 # 下载镜像
 docker pull mysql:5.7
 
 # 启动
-docker run -p 3306:3306 --name mysql \
+docker run -p 3306:3306 --name mysql --network goldmine-net \
 -v ~/data/mysql/log:/var/log/mysql \
 -v ~/data/mysql/data:/var/lib/mysql \
 -v ~/data/mysql/conf:/etc/mysql/conf.d \
@@ -23,7 +31,7 @@ mysql -uroot -proot --default-character-set=utf8
 
 
 
-## Redis
+# Redis
 
 ```shell
 # 下载镜像
@@ -31,6 +39,7 @@ docker pull redis:7
 
 # 启动
 docker run -p 6379:6379 --name redis \
+--network goldmine-net \
 -v ~/data/redis/data:/data \
 -d redis:7 redis-server --appendonly yes
 
@@ -40,7 +49,7 @@ docker exec -it redis redis-cli
 
 
 
-## Nginx
+# Nginx
 
 ```shell
 # 下载镜像
@@ -48,6 +57,7 @@ docker pull nginx:1.22
 
 # 首次运行，为了获得配置
 docker run -p 80:80 --name nginx \
+--network goldmine-net \
 -v ~/data/nginx/html:/usr/share/nginx/html \
 -v ~/data/nginx/logs:/var/log/nginx  \
 -d nginx:1.22
@@ -73,7 +83,7 @@ docker run -p 80:80 --name nginx \
 
 
 
-## RabbitMQ
+# RabbitMQ
 
 ```shell
 # 下载镜像
@@ -81,6 +91,7 @@ docker pull rabbitmq:3.9-management
 
 # 启动
 docker run -p 5672:5672 -p 15672:15672 --name rabbitmq \
+--network goldmine-net \
 -v ~/data/rabbitmq/data:/var/lib/rabbitmq \
 -d rabbitmq:3.9-management
 
@@ -91,9 +102,9 @@ firewall-cmd --reload
 
 
 
-## ELK
+# ELK
 
-### Elasticsearch
+## Elasticsearch
 
 ```shell
 # 下载镜像
@@ -108,6 +119,7 @@ chmod 777 ~/data/elasticsearch/data/
 
 # 启动
 docker run -p 9200:9200 -p 9300:9300 --name elasticsearch \
+--network goldmine-net \
 -e "discovery.type=single-node" \
 -e "cluster.name=elasticsearch" \
 -e "ES_JAVA_OPTS=-Xms512m -Xmx1024m" \
@@ -132,7 +144,7 @@ firewall-cmd --reload
 
 
 
-### Logstash
+## Logstash
 
 ```shell
 # 下载镜像
@@ -196,6 +208,7 @@ output {
 # 启动
 # --link 连接容器elasticsearch，可以互相通信
 docker run --name logstash -p 4560:4560 -p 4561:4561 -p 4562:4562 -p 4563:4563 \
+--network goldmine-net \
 --link elasticsearch:es \
 -v ~/data/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf \
 -d logstash:7.17.3
@@ -209,7 +222,7 @@ logstash-plugin install logstash-codec-json_lines
 
 
 
-### Kibana
+## Kibana
 
 ```shell
 # 下载镜像
@@ -217,6 +230,7 @@ docker pull kibana:7.17.3
 
 # 启动
 docker run --name kibana -p 5601:5601 \
+--network goldmine-net \
 --link elasticsearch:es \
 -e "elasticsearch.hosts=http://es:9200" \
 -d kibana:7.17.3
@@ -228,7 +242,7 @@ firewall-cmd --reload
 
 
 
-## MongoDB
+# MongoDB
 
 ```shell
 # 下载镜像
@@ -236,13 +250,14 @@ docker pull mongo:4
 
 # 启动
 docker run -p 27017:27017 --name mongo \
+--network goldmine-net \
 -v ~/data/mongo/db:/data/db \
 -d mongo:4
 ```
 
 
 
-## MinIO
+# MinIO
 
 ```shell
 # 下载镜像
@@ -250,6 +265,7 @@ docker pull minio/minio
 
 # 启动
 docker run -p 9090:9000 -p 9001:9001 --name minio \
+--network goldmine-net \
 -v ~/data/minio/data:/data \
 -e MINIO_ROOT_USER=minioadmin \
 -e MINIO_ROOT_PASSWORD=minioadmin \
@@ -260,7 +276,7 @@ docker run -p 9090:9000 -p 9001:9001 --name minio \
 
 
 
-## Nexus
+# Nexus
 
 ```shell
 # 下载镜像
@@ -272,6 +288,7 @@ chmod 777 -R ~/data/nexus/data
 
 # 启动
 docker run -d --name nexus3 -p 8081:8081 --restart always \
+--network goldmine-net \
 -v ~/data/nexus/data:/nexus-data \
 sonatype/nexus3
 
@@ -280,5 +297,57 @@ docker logs -f nexus3
 
 # 首次登录查看并在管理界面修改密码（admin/密文）
 cat ~/data/nexus/data/admin.password
+```
+
+
+
+# Nacos
+
+## 创建数据库
+
+```mysql
+-- 创建数据库（必须用utf8mb4编码）
+CREATE DATABASE nacos_config CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- 下载Nacos官方SQL文件（注意必须版本一致，否则数据库结构不一致会导致系统错误）
+wget https://github.com/alibaba/nacos/blob/2.0.3/distribution/conf/nacos-mysql.sql
+
+-- 导入到MySQL
+mysql -u root -proot nacos_config < mysql-schema.sql
+```
+
+
+
+## 创建docker镜像
+
+- 注意 `MYSQL_SERVICE_HOST=localhost` 如果mysql也是一个镜像容器的话，要配置在一个网络中 `docker network create goldmine-net`，同时容器声明 `--network goldmine-net`，否则无法访问
+
+```shell
+# 下载镜像
+docker pull nacos/nacos-server:2.0.3
+
+# 启动
+#   -e MYSQL_SERVICE_HOST=mysql 使用容器名
+docker run -d \
+  --name nacos-standalone \
+  --network goldmine-net \
+  -p 8848:8848 \
+  -p 9848:9848 \
+  --restart=always \
+  -e MODE=standalone \
+  -e SPRING_DATASOURCE_PLATFORM=mysql \
+  -e MYSQL_SERVICE_HOST=mysql \
+  -e MYSQL_SERVICE_PORT=3306 \
+  -e MYSQL_SERVICE_USER=root \
+  -e MYSQL_SERVICE_PASSWORD=root \
+  -e MYSQL_SERVICE_DB_NAME=nacos_config \
+  -e MYSQL_SERVICE_DB_PARAM="characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true" \
+  -e JVM_XMS=512m \
+  -e JVM_XMX=512m \
+  -v ~/data/nacos/logs:/home/nacos/logs \
+  nacos/nacos-server:2.0.3
+  
+# 访问
+http://localhost:8848/nacos（ nacos / nacos ）
 ```
 
