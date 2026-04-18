@@ -118,6 +118,12 @@ exit
 
 
 
+### Nacos
+
+注意需要和Mysql在同一个 network 下，docker容器才可以互访
+
+
+
 ## JDK
 
 ```shell

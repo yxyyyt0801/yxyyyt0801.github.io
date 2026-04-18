@@ -320,7 +320,7 @@ mysql -u root -proot nacos_config < mysql-schema.sql
 
 ## 创建docker镜像
 
-- 注意 `MYSQL_SERVICE_HOST=localhost` 如果mysql也是一个镜像容器的话，要配置在一个网络中 `docker network create goldmine-net`，同时容器声明 `--network goldmine-net`，否则无法访问
+- 注意 `MYSQL_SERVICE_HOST=mysql` 如果mysql也是一个镜像容器的话，要配置在一个网络中 `docker network create goldmine-net`，同时两个容器都要声明 `--network goldmine-net` 加入到同一个 network 中，否则无法互相访问
 
 ```shell
 # 下载镜像
