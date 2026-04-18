@@ -129,4 +129,9 @@
     - [Linux命令](tool/linux/linux_command)
   - Nginx
     - [Nginx概述](tool/nginx/nginx_overview)
+- 🎨 艺术
+  - 绘画
+
+    - [Krenz光影与色彩](art/painting/krenz_lightandcolor.md)
+
 
