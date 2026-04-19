@@ -109,6 +109,9 @@
         - 从缓存查询
         - 从数据库查询 queryFromDatabase
         - 查询结果置入缓存
+          - parameter 入参
+          - type 出参
+          - resultset 集合转换
 
 ![mybatis_query.drawio](mybatis_code_analysis.assets/mybatis_query.drawio.png)
 
@@ -163,7 +166,136 @@
 
 ## 插件
 
-可以在ParameterHandler、ResultSetHandler、StatementHandler、Executor添加插件，本质是动态代理目标方法。
+MyBatis 使用 **责任链模式** 和 **动态代理** 实现插件。
 
-插件实现Interceptor接口，添加Intercepts注解，指定代理目标类的某个方法
+可以在 Executor（可以获取mapper参数）、StatementHandler（直接操作 SQL，但遇到复杂的动态 SQL 时，字符串拼接很容易搞崩语法）、ParameterHandler、ResultSetHandler 添加插件。
 
+**编写步骤**：
+
+1. 实现 `Interceptor`接口。
+2. 使用 `@Intercepts`和 `@Signature`注解指定要拦截的类和方法签名。
+3. 在配置文件中注册该插件。
+
+
+
+# 核心问题
+
+## SQL 注入
+
+MyBatis 中的 `#{}` 使用了预编译，而 `${}` 是字符串替换， `#{}`能防注入。
+
+-  `${}` 字符串拼接： 程序使用字符串格式化或简单替换的方式构建SQL。
+
+  ```sql
+  -- sql 注入，风险极大
+  SELECT * FROM products WHERE id = '1'; DROP TABLE users; --'
+  
+  -- 错误用法
+  String sql = "SELECT * FROM users WHERE name = '" + name + "'";
+  stmt = conn.createStatement();
+  ResultSet rs = stmt.executeQuery(sql);
+  ```
+
+  
+
+-  `#{}` SQL 语句的模板（带有 `?`占位符）在**执行前已被数据库编译**（预编译语句（Prepared Statements）），用户输入的数据在后续**仅作为参数传入**，不会被当作 SQL 代码解析。
+
+  ```sql
+  // 正确做法（预编译）：
+  String sql = "SELECT * FROM users WHERE name = ?";
+  pstmt = conn.prepareStatement(sql);
+  pstmt.setString(1, name); // 安全地设置参数
+  ResultSet rs = pstmt.executeQuery();
+  ```
+
+
+
+- 使用 MyBatis 时，**优先使用 `#{}`**，明确知晓使用 `${}`的风险并严格控制（如用于动态表名时，仍需用白名单校验表名）。
+
+
+
+## mybatis-plus
+
+- 对原生 MyBatis 的扩展
+
+  - 强大的 CRUD 操作，通用mapper和service接口
+
+  - 条件构造器（LambdaQueryWrapper 类型安全），**替代动态 SQL 的编写**，支持链式调用，类型安全
+
+  - 分页插件 PaginationInnerInterceptor
+
+  - 代码生成器
+
+  - 全局元数据自动填充
+
+    ```java
+    @Data
+    public class User {
+        @TableId(type = IdType.AUTO) // 主键策略
+        private Long id;
+        @TableField(fill = FieldFill.INSERT) // 插入时填充
+        private Date createTime;
+        @TableField(fill = FieldFill.INSERT_UPDATE) // 插入和更新时填充
+        private Date updateTime;
+        @TableLogic(value = "0", delval = "1")  // 0表示未删除，1表示已删除
+        private Integer deleted;
+    }
+    ```
+
+  - 逻辑删除
+
+    @TableLogic和全局配置两者选其一即可，如果两者都有：**注解的优先级高于全局配置**
+
+    ```yaml
+    # 并非物理删除，而是通过一个字段标识状态（如 deleted=1）。MP 会自动在所有查询条件中加上 deleted=0的条件，在删除时改为更新该字段。
+    mybatis-plus:
+      global-config:
+        db-config:
+          logic-delete-field: deleted  # 全局逻辑删除字段
+          logic-delete-value: 1        # 逻辑已删除值
+          logic-not-delete-value: 0   # 逻辑未删除值
+    ```
+
+    
+
+- 分页如何实现的
+
+  - MyBatis-Plus  通过 `PaginationInnerInterceptor` （Executor 拦截器）拦截所有查询方法，在执行前按照方言动态改写 SQL
+    - mybatis-plus-boot-starter
+  - PageHelper 通过 拦截器（责任链模式 PageInterceptor（Executor 拦截器），安装方言改写 SQL）和 ThreadLocal（参数隐式传递）实现
+    - mybatis-spring-boot-starter
+    - pagehelper-spring-boot-starter
+
+
+
+## MyBatis 与 Spring 整合
+
+**Mapper 扫描机制**（如 `@MapperScan`）
+
+启动Spring应用
+     ↓
+@SpringBootApplication → @MapperScan("com.example.mapper")
+     ↓
+Spring容器启动，处理@MapperScan
+     ↓
+**MapperScannerRegistrar.registerBeanDefinitions()**
+     ↓
+注册MapperScannerConfigurer到容器
+     ↓
+postProcessBeanDefinitionRegistry()被调用
+     ↓
+ClassPathMapperScanner扫描指定包
+     ↓
+找到**所有Mapper接口，创建BeanDefinition**
+     ↓
+修改BeanDefinition：beanClass=**MapperFactoryBean（FactoryBean -> getObject -> getSqlSession().getMapper(this.mapperInterface)）**
+     ↓
+Spring实例化MapperFactoryBean
+     ↓
+getObject() → **getSqlSession().getMapper()**
+     ↓
+MyBatis创建**JDK动态代理**
+     ↓
+Mapper代理对象注入到Service
+     ↓
+可以正常使用@Autowired注入Mapper
