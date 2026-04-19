@@ -184,7 +184,7 @@ TCP Keepalive 核心参数
     - 处理Accept事件的bossGroup只有一个NioEventLoop线程
     - 处理Read事件的workerGroup有16个NioEventLoop线程
   - `executor` ThreadPerTaskExecutor的实现类
-    - 特殊线程池，**一个任务创建一个线性**，即调用一次创建一个线程，<font color=red>给NioEventLoop使用</font>，用于创建线程然后绑定到NioEventLoop上
+    - 特殊线程池，**一个任务创建一个线程**，即调用一次创建一个线程，<font color=red>给NioEventLoop使用</font>，用于创建线程然后绑定到NioEventLoop上
     - DefaultThreadFactory负责创建线程，线程命名规则是，以nioEventLoopGroup-x-为前缀
   - `chooserFactory` DefaultEventExecutorChooserFactory
     - 判断是否是2的幂，提供优化后的EventExecutorChooser，可以从NioEventLoop池中选择一个
