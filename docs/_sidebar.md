@@ -132,6 +132,6 @@
 - 🎨 艺术
   - 绘画
 
-    - [Krenz光影与色彩](art/painting/krenz_lightandcolor.md)
-
+    - [Krenz 光影与色彩](art/painting/krenz_light_color.md)
+    - [Krenz 透视与结构](art/painting/krenz_perspective_structure.md)
 
