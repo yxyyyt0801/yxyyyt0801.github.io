@@ -956,8 +956,21 @@ public class UsageTracking {
 ## AOP代理实现比较
 
 - jdk 需要实现接口，创建和调用相对较快，优先使用；代理类的**字节码**由ProxyGenerator自己生成
+  - 创建快，执行慢（反射）
 
-- cglib 无法代理final和static，创建时较慢（一式三份，代理类、代理类的fastClass，被代理类的fastClass）；**依赖ASM**
+  - 反射慢的原因
+    - 方法查找
+
+    - 安全检查
+
+    - 参数处理
+
+    - Native 调用
+
+    - 无法优化：无法内联、无法逃逸分析、无法向量化
+
+- cglib 无法代理final和static，**创建时较慢**（一式三份，代理类、代理类的fastClass，被代理类的fastClass）；**依赖ASM**
+  - 创建慢（3份类），执行快（通过索引静态调用，事先把方法签名缓存）
 
 - javassist 手动编写**字符串源码**，较繁琐；创建和调用相对较快
 

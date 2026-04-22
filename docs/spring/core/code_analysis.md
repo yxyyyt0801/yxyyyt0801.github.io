@@ -702,13 +702,13 @@ A引用B，B引用A，形成循环依赖
     - 创建一个**事务对象**
   - `PROPAGATION_SUPPORTS`、`PROPAGATION_NOT_SUPPORTED`、`PROPAGATION_NEVER`
     - 不会创建事务
-- 如果当前已经存在事务，传播级别是 `REQUIRED`
+- 如果当前已经存在事务，传播级别是 `REQUIRED`（@Transactional 默认传播级别）
   - `PROPAGATION_NEVER`
     - 执行业务逻辑前，抛出异常IllegalTransactionStateException，已经存在的事务回滚
   - `PROPAGATION_NOT_SUPPORTED`
     - 挂起当前事务；
     - 不会创建事务；
-    - 嵌套事务如果写入数据后抛出异常，数据不会回滚；当前事务如果写入数据后收到嵌套事务抛出的异常，数据会回滚
+    - 嵌套事务如果写入数据后，当前事务抛出异常，数据不会回滚；当前事务如果写入数据后收到嵌套事务抛出的异常，数据会回滚
     - 嵌套事务如果写入数据正常，数据正常入库；当前事务如果写入数据后，自己抛出异常，数据会回滚
   - `PROPAGATION_REQUIRES_NEW` （里边的影响外边的，但外边的不影响里边的）
     - 挂起当前事务
@@ -728,7 +728,11 @@ A引用B，B引用A，形成循环依赖
 
 ### 隔离级别 isolation
 
-- `TransactionDefinition.ISOLATION_DEFAULT` 使用后端数据库默认的隔离级别，MySQL 默认采用的 `REPEATABLE_READ` 隔离级别 Oracle 默认采用的 `READ_COMMITTED` 隔离级别
+- `TransactionDefinition.ISOLATION_DEFAULT` 使用后端数据库默认的隔离级别
+  - MySQL 默认采用的 `REPEATABLE_READ` 隔离级别
+  - Oracle 默认采用的 `READ_COMMITTED` 隔离级别
+  - 达梦数据库（DM）的默认事务隔离级别是 `READ COMMITTED`。虽然 SQL 标准中有“可重复读（REPEATABLE READ）”，但在达梦数据库中，该级别被映射并升级为了更严格的“串行化（SERIALIZABLE）”级别。
+
 - `TransactionDefinition.ISOLATION_READ_UNCOMMITTED` 最低的隔离级别，使用这个隔离级别很少，因为它允许读取尚未提交的数据变更，可能会导致脏读、不可重复读、幻读
 - `TransactionDefinition.ISOLATION_READ_COMMITTED` 允许读取并发事务已经提交的数据，可以阻止脏读，但是不可重复读、幻读仍有可能发生
 - `TransactionDefinition.ISOLATION_REPEATABLE_READ` 对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，可以阻止脏读和不可重复读，但幻读仍有可能发生
@@ -778,7 +782,7 @@ A引用B，B引用A，形成循环依赖
 
   rollbackFor 可以指定能够触发事务回滚的异常类型。Spring默认抛出了未检查unchecked异常（继承自 **RuntimeException** 的异常）或者 **Error** 才回滚事务；其他异常不会触发回滚事务。如果在事务中抛出其他类型的异常，但却期望 Spring 能够回滚事务，就需要指定 rollbackFor属性。
 
-- 同一个类中方法调用，导致@Transactional失效
+- 同一个类中方法调用，导致@Transactional失效（本质是AOP）
 
   即使两个方法都有传播机制设置，会导致事务失效。
 
