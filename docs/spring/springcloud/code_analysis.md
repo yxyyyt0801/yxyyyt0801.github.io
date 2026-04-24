@@ -359,8 +359,6 @@ PeerAwareInstanceRegistryImpl注册本地注册表之后，调用replicateToPeer
 ![feign-create-proxy](code_analysis.assets/feign-create-proxy.png)
 
 
-接口注入时，尝试缓存接口的所有方法对应的MethodHandler映射，提高解析效率；
-
 
 
 ### 服务调用
