@@ -21,16 +21,17 @@ Spring Boot会为常见配置场景进行自动配置。
     - `SpringApplication.run(XxApplication.class, args);` 启动引导应用程序
   
 - `src/main/resources` 资源
+  
   - `application.properties` 配置应用程序和Spring Boot的属性 或 `application.yml`
-
+  
   - `static` 静态内容
-
+  
   - `templates` 视图模板
-
+  
   - `logback.xml` 日志配置
-
+  
   - ~~`db/migration` 基于Flyway数据库迁移文件（限制数据库平台）~~
-
+  
     ```xml
     <!-- schema_version表记录运行脚本的执行情况 -->
     <dependency> 
@@ -38,9 +39,9 @@ Spring Boot会为常见配置场景进行自动配置。
      <artifactId>flyway-core</artifactId> 
     </dependency>
     ```
-
+  
   - `/db/changelog/db.changelog-master.yaml` 基于Liquibase数据库迁移文件
-
+  
     ```xml
     <!-- databaseChangeLog表记录变更集执行情况 -->
     <dependency> 
@@ -48,7 +49,7 @@ Spring Boot会为常见配置场景进行自动配置。
      <artifactId>liquibase-core</artifactId> 
     </dependency>
     ```
-
+  
 - `src/test/java` 测试代码
   
   - `XxApplicationTests.java` 测试代码
@@ -93,6 +94,8 @@ Spring Boot会为常见配置场景进行自动配置。
 **优先级从高到低，任何在高优先级属性源里设置的属性都会覆盖低优先级的相同属性。**
 
 Spring Boot自动配置的Bean提供了300多个用于**微调**的属性。当你调整设置时，只要在如下指定就可以了。
+
+优先级从高到低，优先级如下：
 
 1. 命令行参数 `--x=y`
 
