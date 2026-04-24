@@ -206,6 +206,14 @@ A引用B，B引用A，形成循环依赖
 
 ![spring_core_ioc_getbean_3cache](code_analysis.assets/spring_core_ioc_getbean_3cache.png)
 
+实例化后，就会添加到3级缓存，3级缓存放到是ObjectFactory对实例对象的早期引用，然后才会装配属性；
+
+装配属性时，如果正在创建，会1级、2级、3级缓存顺序查找；
+
+- 如果在1级缓存，已经装配完毕，直接返回；
+- 没有，查2级缓存，直接返回；
+- 没有，查3级缓存，从ObjectFactory获取早期实例，触发getEarlyBeanReference，由**后置处理器**决定是否创建代理，需要则代理，不需要则原始对象放到2级缓存；同时，移除3级缓存；
+
 
 
 # spring-context
