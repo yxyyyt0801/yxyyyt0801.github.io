@@ -857,7 +857,9 @@ NettyClientHandler, NettyCodecAdapter.InternalEncoder
   - Config，面向应用
   - Proxy，封装代理逻辑
   - Registry
-  - Cluster，集群，容错，负载均衡，路由
+  - Cluster，集群，**容错**，**负载均衡**，路由
+    - 负载均衡，解决的问题该向哪一个服务发送请求
+    - 容错，解决的是如果失败后，如何处理这个请求
   - Monitor
   - Protocol，不同协议，通讯方式不同，报文不同，导出和引用的逻辑不同
   - Exchange，request/response 请求响应模型，同步转异步
