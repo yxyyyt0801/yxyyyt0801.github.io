@@ -810,14 +810,6 @@ NettyClientHandler, NettyCodecAdapter.InternalEncoder
 
   - DecodeHandler，从Response中获取DecodeableRpcResult，由DecodeableRpcResult自己解析报文体
 
-
-
-
-
-
-
-
-
 - NettyCodecAdapter聚合编解码，委托 DubboCodec 提供编解码功能（继承ExchangeCodec），负责将Request和Response和字节流进行转换。
   - 在解码过程中，只解析报文头，如为RpcInvocation报文体构造一个DecodeableRpcInvocation设置到Request的data字段，报文体的解析**延迟到业务线程**
 - DecodeHandler负责解析Request的data字段（Response的result字段），其是DecodeableRpcInvocation（DecodeableRpcResult）类型，尤其自解析
