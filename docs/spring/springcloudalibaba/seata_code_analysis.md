@@ -2,6 +2,8 @@
 
 ## seata
 
+**Seata**（Simple Extensible Autonomous Transaction Architecture）是阿里巴巴开源的**分布式事务解决方案**
+
 - git clone git@github.com:yxyyyt/seata.git
 - cd seata
 - git checkout -b v1.5.0.yxyyyt v1.5.0
@@ -18,7 +20,7 @@
 
 
 
-# AT
+# AT（Auto Transaction）
 
 ## 业务流程
 
@@ -264,7 +266,23 @@
 
 
 
-# TCC
+## 优缺点
+
+优点：
+1. **无侵入**：对业务代码零侵入，只需加注解
+2. **高性能**：一阶段提交本地事务，释放连接
+3. **简单易用**：配置简单，学习成本低
+4. **自动补偿**：自动生成回滚SQL
+
+缺点：
+1. **SQL支持有限**：只支持DML，不支持DDL
+2. **全局锁性能**：高并发下锁冲突可能影响性能
+3. **数据源限制**：需要支持本地ACID事务的数据库
+4. **隔离级别**：==默认读未提交，可能脏读==
+
+
+
+# TCC（Try-Confirm-Cancel）
 
 ## 业务流程
 
@@ -303,6 +321,33 @@
   - 异常回滚
 
     反射调用rollback方法
+
+
+
+## 注意
+
+空回滚和防悬挂
+
+- **空回滚**：Try 未执行（超时），Cancel 执行（TC回调Cancel）
+
+  - 原因：网络超时、Try异常、重试机制
+
+  - 解决：状态检查、记录空回滚
+
+- **防悬挂**：Cancel 先执行（TC回调Cancel），Try 后执行（阻塞，之后请求到达）
+
+  - 原因：网络延迟、RPC顺序错乱
+
+  - 解决：Cancel状态检查、Try拒绝执行
+
+通过插入try和cancel阶段日志解决。
+
+
+
+幂等性
+
+- 数据库唯一约束（insert xid, branchId，如果失败，表示已存在记录，幂等返回）
+- 状态机+去重表
 
 
 
