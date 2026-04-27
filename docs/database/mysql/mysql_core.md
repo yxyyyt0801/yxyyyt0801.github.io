@@ -786,7 +786,7 @@ show index from users;
 
 - partitions：匹配的分区
 
-- type：关联类型或访问类型，即MySQL决定如何查找表中的行，查找数据行对应的大概范围
+- <font color=red>type</font>：关联类型或访问类型，即MySQL决定如何查找表中的行，查找数据行对应的大概范围
 
   system>const>eq_ref>ref>range>index>All
 
@@ -812,7 +812,7 @@ show index from users;
 
 - filtered：按表条件过滤的行百分比
 
-- Extra：执行情况的描述和说明
+- <font color=red>Extra</font>：执行情况的描述和说明
 
   - Using index：使用覆盖索引（结果集的字段是索引）
   - Using index condition：查询的列不完全被索引覆盖，where条件中是一个前导的范围
