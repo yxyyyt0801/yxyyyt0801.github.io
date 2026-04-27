@@ -134,6 +134,7 @@
     - [Photoshop软件操作](painting/adobe/photoshop_software_operation)
   - Krenz系列
     - [色彩零基础训练营](painting/krenz/color_training_camp.md)
+    - [速写人体团练](painting/krenz/sketch_figure.md)
     - [Krenz 光影与色彩](painting/krenz/krenz_light_color.md)
     - [Krenz 透视与结构](painting/krenz/krenz_perspective_structure.md)
 
