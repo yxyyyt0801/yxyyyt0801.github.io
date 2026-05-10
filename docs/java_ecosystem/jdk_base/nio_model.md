@@ -1072,6 +1072,8 @@ Reactor模型包含两个组件：
 
 
 
+SlaveReactor和Worker通过请求队列和响应队列实现数据传递。
+
 
 
 ## NIO 内存映射
@@ -1162,3 +1164,90 @@ MappedByteBuffer privateBuffer = channel.map(
 ```
 
 1.4GB 是 32 位系统在典型配置（**1.5GB最大堆**、ASLR启用、标准库加载）下的实际限制，由地址空间总量、必须的占用、堆内存、ASLR、碎片等因素共同决定。
+
+
+
+# PageCache
+
+## java MappedByteBuffer 实现
+
+直接对应并操作的就是操作系统的 PageCache（页缓存）。
+
+```java
+RandomAccessFile file = new RandomAccessFile("data.bin", "rw");
+FileChannel channel = file.getChannel();
+
+// 当创建 MappedByteBuffer 时
+MappedByteBuffer buffer = channel.map(MapMode.READ_WRITE, 0, fileSize);
+
+// 操作系统内核会：
+// 1. 在进程的虚拟地址空间中分配一段地址空间
+// 2. 将这段地址空间与文件的对应部分建立映射关系
+// 3. 当访问这段内存时，实际上是通过 PageCache 访问文件数据
+
+// 写入数据 - 直接修改 PageCache
+buffer.putInt(0, 12345);           // 修改 PageCache 中的页面
+buffer.putDouble(4, 3.1415926);
+        
+// 读取数据 - 直接从 PageCache 读取
+int value = buffer.getInt(0);      // 从 PageCache 读取
+        
+// 强制刷写 - 将 PageCache 中的脏页写入磁盘
+buffer.force();  // 调用 msync() 系统调用
+        
+channel.close();
+```
+
+
+
+## C 实现
+
+```c
+// 对应 C 层面
+msync(addr, length, MS_SYNC);
+
+// 对应内核行为
+// 1. 遍历映射区域的所有页面
+// 2. 检查哪些页面在 PageCache 中是脏的
+// 3. 将这些脏页写入磁盘
+// 4. 等待所有写入完成
+```
+
+
+
+## 显式清理
+
+MappedByteBuffer是通过FileChannel.map方法得到的，其具体实现是DirectByteBuffer，而DirectByteBuffer实现了sun.misc.DirectBuffer
+
+```java
+Cleaner cleaner = ((DirectBuffer) buffer).cleaner();
+if (cleaner != null) {
+	cleaner.clean();  // 释放映射
+}
+```
+
+
+
+## 对齐优化
+
+```java
+public class AlignmentOptimization {
+    // PageCache 页面通常为 4KB
+    public static final int PAGE_SIZE = 4096;
+    
+    public void alignedAccess(MappedByteBuffer buffer) {
+        // 对齐访问可提高性能
+        int offset = 0;
+        while (offset < buffer.limit()) {
+            // 确保按页面边界访问
+            int alignedOffset = (offset + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1);
+            buffer.position(alignedOffset);
+            
+            // 每次处理一个页面的数据
+            processPage(buffer, Math.min(PAGE_SIZE, buffer.remaining()));
+            offset += PAGE_SIZE;
+        }
+    }
+}
+```
+

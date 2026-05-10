@@ -88,7 +88,7 @@ RocketMQ使用的消息模型是标准的**发布 - 订阅模型**。
 
 - TCC(Try-Confirm-Cancel) 
 
-- 事务消息
+- 事务消息（RocketMQ版本在4.3.0或以上）
 
   <img src="rocketmq_practice.assets/rocketmq_distributed_transaction.png" alt="rocketmq_distributed_transaction" style="zoom: 67%;" />
 
@@ -97,7 +97,7 @@ RocketMQ使用的消息模型是标准的**发布 - 订阅模型**。
   3. **执行本地事务**
   4. <font color=red>提交或回滚（可能MQ会失败）</font>
      - Kafka，直接抛出异常。业务系统反复重复提交，直到成功；或删除之前创建的订单进行补偿
-     - 如果出现网络异常，RocketMQ的Broker没有收到提交或回滚的请求，Broker会定期（==如何保证在发送方commit或rollback失败后反查？本地长事务如何避免？==——Broker会定期查询，此时Producer可能已经提交本地事务成功，或者失败、正在提交长事务，则给Broker的状态是UNKNOWN）去Producer（此时Producer为Server）反查这个事务对应的本地事务状态。然后根据反查结果决定提交或回滚这个事务。
+     - 如果出现网络异常，RocketMQ的Broker没有收到提交或回滚的请求，Broker会定期`（如何保证在发送方commit或rollback失败后反查？本地长事务如何避免？——Broker会定期查询，此时Producer可能已经提交本地事务成功，或者失败、正在提交长事务，则给Broker的状态是UNKNOWN）`去Producer（此时Producer为Server）反查这个事务对应的本地事务状态。然后根据反查结果决定提交或回滚这个事务。
   5. 投递消息
 
 
