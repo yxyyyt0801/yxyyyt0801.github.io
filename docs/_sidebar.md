@@ -97,7 +97,6 @@
 - 🤖 AI
   - openclaw
     - [openclaw概述](ai/openclaw/openclaw_overview)
-
 - 🐣 项目
   - xdfs
     - [xdfs 分布式文件系统详细设计 v0.1.0](project/xdfs/xdfs_dd_v0.1.0)
@@ -130,8 +129,9 @@
   - Nginx
     - [Nginx概述](tool/nginx/nginx_overview)
 - 🎨 绘画
-  - Adobe
-    - [Photoshop软件操作](painting/adobe/photoshop_software_operation)
+  - 软件
+    - [Photoshop软件操作](painting/software/photoshop_software_operation)
+    - [Krita软件操作](painting/software/krita_software_operation)
   - Krenz系列
     - [色彩零基础训练营](painting/krenz/color_training_camp.md)
     - [速写人体团练](painting/krenz/sketch_figure.md)
