@@ -98,6 +98,8 @@
   - openclaw
     - [openclaw概述](ai/openclaw/openclaw_overview)
 - 🐣 项目
+  - CPA
+    - [CPA 调研](project/cpa/cpa_research)
   - xdfs
     - [xdfs 分布式文件系统详细设计 v0.1.0](project/xdfs/xdfs_dd_v0.1.0)
     - [xdfs 分布式文件系统详细设计 v0.2.0（ING）](project/xdfs/xdfs_dd_v0.2.0)
