@@ -141,8 +141,10 @@ mvn dependency:analyze
 
   - 用于解决多模块项目在发布（deploy）或安装（install）时，因版本占位符（如 `${revision}`）未被解析而导致的依赖无法下载问题。本地、远程仓库的pom是去占位符的。
 
-  - 扁平化pom，去除 `<parent>` 节点；代替所有占位符，如依赖的 ``
+  - 扁平化pom，去除 `<parent>` 节点；代替所有占位符
   
+    - ==注意oss只保留坐标；bom会保留 `<dependencyManagement>` 和 `<dependencies>`==；因此普通jar用oss，bom适用bom
+    
     ```xml
     <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -170,6 +172,7 @@ mvn dependency:analyze
                 </plugin>
     </build>
     ```
+    
     
     
 

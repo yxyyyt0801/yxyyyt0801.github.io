@@ -35,3 +35,11 @@ settings.xml
 mvn -v
 ```
 
+
+
+# 问题
+
+- [ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.1:compile (default-compile) on project goldmine-framework-common: Compilation failure
+  [ERROR] No compiler is provided in this environment. Perhaps you are running on a JRE rather than a JDK?
+
+  配置jdk环境变量，之后控制台重启。

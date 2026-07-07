@@ -1,3 +1,214 @@
+# 基座
+
+## Java 企业应用
+
+- 基础设施
+  - spring
+  - Java EE container（Tomcat、Jetty）
+  - MQ
+  - Cache（Redis）
+  - RPC（Dubbo、OpenFeign、gRPC）
+  - Search（ES）
+  - Big Data（Hive、HBase）
+  - Task、Job、Scheduler
+- 业务共享模块
+  - 部署
+    - 近端（客户端依赖）
+    - 远端（云端API调用）
+  - 分类
+    - 会员
+    - 交易
+    - 物流
+    - 风控
+- 业务应用
+  - 聚焦某个业务领域
+
+
+
+## 标准化项目结构
+
+### API
+
+API工程，定义API接口；==只有API包需要deploy到maven公共仓库==
+
+- 接口（interfaces）
+  - RPC通讯
+    - Spring cloud OpenFeign 接口
+      - spring-webmvc **可选依赖**
+      - Lombok **可选依赖**
+      - spring-cloud-starter-openfeign **可选依赖**
+      - @FeignClient("${user-serice.name}")  使用占位符方式，易于后续服务拆分
+        - **拆分服务接口升级**
+          - 服务方：老接口 @Deprecated，当没有流量时，即可下线
+          - 服务方：新接口，和老接口并存，同时保证url兼容
+          - 调用方：1、新老接口并存；2、逐步下线老接口服务；3、切换新接口
+    - Apache Dubbo RPC 接口
+      - 依赖 dubbo-common
+      - @DubboService
+  - 业务接口
+    - **通过元注解支持，注意依赖注解，而非API**（可编译通过，运行时可以没有，没有的话只会不识别！）
+- 模型（model）
+  - 分类
+    - RPC 通讯模型
+    - 业务模型
+    - 框架模型
+  - 属性用包装类型，null 表示无值
+- 常量（constants）
+- 枚举（enums）
+- 注解（annotation）
+
+
+
+### data
+
+数据存储工程
+
+- 类型
+  - SQL
+    - JDBC
+      - Spring jdbc
+      - mybatis
+      - jpa
+
+  - NoSQL
+    - redis
+    - mongo
+    - es
+
+- 技术栈
+  - Spring data
+
+- 目录
+  - repository（接口）
+    - extends CrudRepository（实现透明化，sql、nosql）Spring-jpa
+
+
+
+### core
+
+- 技术栈
+  - spring-boot-starter
+
+
+
+### web
+
+Web主项目工程
+
+- 目录结构
+  - XxxApplication
+  - controller（实现 API 接口）
+  - exception
+- 引导类 - main class
+- 构建 - Spring Boot  Maven Plugin（fat jar）
+  - spirng-boot-maven-plugin
+- 技术栈
+  - spirng-boot-starter-web
+
+
+
+### dependencies
+
+外部引用BOM
+
+- 命名 xxx-dependencies
+- 继承或组合基础设施的 BOM
+- 主要聚焦于业务组件依赖，大量业务组件API
+- 缺点
+  - 版本升级缺乏灵活度，臃肿
+  - 通常采用 **snapshot 模式** 升级
+    - 业务 BOM 保持 snapshot 模式，业务组件依赖使用 release 模式（推荐？）
+    - 业务 BOM、业务组件 保持 snapshot 模式
+
+
+
+# 构建
+
+## 依赖设计
+
+- 能不依赖尽量不要依赖
+
+- `<optional>true</optional>`  服务提供方**整合**多个功能，为了编译通过；减少传递依赖；（一般用于共享模块，一个接口，多个实现，底层不同的依赖可以用optional修饰；以插件形式提供）
+  - `<scope>provided</scope>` 类似compile，但不会传递依赖，由外部容器提供API并由外部容器驱动；由外部容器决定是否启用
+  - `<optional>true</optional>`  由应用决定是否启用，以及依赖的版本；用错了会导致版本冲突
+
+
+
+## 依赖冲突
+
+- 依赖仲裁，按路径短的原则
+  - 不同jar，按依赖路径
+  - 同一个jar，按pom中出现的顺序
+
+
+
+## 依赖管理
+
+- 统一在BOM中管理版本 DependencyManagement（也是pom文件）
+  - 了解不同版本的兼容情况，通过 `<profile>` 兼容测试 
+- 基础或共享依赖模块，尽量**向下兼容**低版本的第三方Artifact
+- 基础或共享依赖模块，要兼容可选依赖Artifact
+  - 实现层面动态判断（ClassLoading尽量避免出现在对象级别，对象字段、方法、构造器内；出现在类级别，class字段、static 块中）
+  - 减少StackTrace大小，ZGC
+- 基础或共享依赖模块，尽可能依赖出现概率大的第三方Artifact
+- 依赖某个或少数API时，尽可能**复制**这些API实现，而非依赖整个第三方Artifact（哈哈，和我原来想的不一样）；避免依赖过多！
+  - dubbo复制netty
+  - spring复制asm
+  - shard插件
+- snapshot和release模式选择
+  - 大多数企业选择snapshot模式（**同名但不唯一，每日更新，方便通知，且频繁更新修复问题**）
+    - 优势：框架、基础设施
+    - 风险：风险大，应用部署多版本，万一某个版本不稳定，回滚很复杂
+    - 应用：安全包
+  - 少数企业选择release模式（**唯一且不可变**）
+    - 优势：容器化
+    - 风险：风险小，影响相对较小，**个人推荐**
+    - 缺点：更新升级不灵活
+    - 应用：中间件
+- springboot和Springcloud对应版本兼容性
+  - spring-io/start.spring.io -> start-site -> resources/application.yml
+
+
+
+
+## 三方库升级策略
+
+**优雅升级**三方库，springboot、springcloud
+
+- 基础设施 ，采用不同的`<profile></profile>` 回归测试，通过 `mvn clean verify -P regression` 激活测试用例
+- 应用，需要QA介入回归
+- 依赖参考
+  - spring cloud consul
+    - spring cloud build > spring cloud build dependencies
+      - spring boot dependencies（外部依赖）
+
+  - 建议
+    - dependencies 对外 聚合（如 spring boot 和 spring cloud）**对外清单，声明版本**
+    - parent 对内 继承（如 spring cloud consul 和 spring cloud build）
+
+
+
+## Maven插件
+
+- spring-boot-maven-plugins 
+  - 打包 fat jar，添加 repackage
+  - 添加 exclude，**打包**的时候删除
+- maven-deploy-plugin 跳过部署
+- flatten-maven-plugin 替换变量（package起作用）
+  - gitignore 排除 .flattened-pom.xml
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 前言
 
 ## 测试
@@ -25,29 +236,6 @@
 - 进入一家公司接旧项目，通过单元测试熟悉系统功能
 
 
-
-## Java 企业应用
-
-- 基础设施
-  - spring
-  - Java EE container（Tomcat、Jetty）
-  - MQ
-  - Cache（Redis）
-  - RPC（Dubbo、OpenFeign、gRPC）
-  - Search（ES）
-  - Big Data（Hive、HBase）
-  - Task、Job、Scheduler
-- 业务共享模块
-  - 部署
-    - 近端（客户端依赖）
-    - 远端（云端API调用）
-  - 分类
-    - 交易
-    - 会员
-    - 物流
-    - 风控
-- 业务应用
-  - 聚焦某个业务领域
 
 
 
@@ -106,71 +294,9 @@
 
 ## 基础框架工程构建
 
-### 依赖设计
-
-- 能不依赖尽量不要依赖
-
-- `<optional>true</optional>`  服务提供方**整合**多个功能，为了编译通过；减少传递依赖；（一般用于共享模块，一个接口，多个实现，底层不同的依赖可以用optional修饰；以插件形式提供）
-  - `<scope>provided</scope>` 类似compile，但不会传递依赖，由外部容器提供API并由外部容器驱动
 
 
-
-### 依赖冲突
-
-- 依赖仲裁，按路径短的原则
-  - 不同jar，按依赖路径
-  - 同一个jar，按pom中出现的顺序
-
-
-
-### 依赖管理
-
-- 统一在BOM中管理版本 DependencyManagement（也是pom文件）
-  - 了解不同版本的兼容情况
-- 基础或共享依赖模块，尽量向下兼容低版本的第三方Artifact
-- 基础或共享依赖模块，要兼容可选依赖Artifact
-  - 实现层面动态判断（ClassLoading尽量避免出现在对象级别）
-  - 减少StackTrace大小，ZGC
-- 基础或共享依赖模块，尽可能依赖出现概率大的第三方Artifact
-- 依赖某个或少数API时，尽可能**复制**这些API实现，而非依赖整个第三方Artifact（哈哈，和我原来想的不一样）；避免依赖过多！
-  - dubbo复制netty
-  - spring复制asm
-  - shard插件
-
-
-
-### 基础框架版本策略
-
-- 大多数企业选择snapshot模式（**同名但不唯一，每日更新，方便通知，且频繁更新修复问题**）
-  - 优势：框架、基础设施
-  - 风险：风险大，应用部署多版本，万一某个版本不稳定，回滚很复杂
-  - 应用：安全包
-
-- 少数企业选择release模式（**唯一且不可变**）
-  - 优势：容器化
-  - 风险：风险小，影响相对较小，**个人推荐**
-  - 缺点：更新升级不灵活
-  - 应用：中间件
-
-
-
-### 三方库升级策略
-
-**优雅升级**三方库，springboot、springcloud
-
-- 基础设施 ，采用不同的`<profile></profile>` 回归测试，通过 `mvn clean verify -P regression` 激活测试用例
-- 应用，需要QA介入回归
-- 依赖参考
-  - spring cloud
-    - spring boot dependencies
-      - spring cloud build dependencies
-
-    - spring cloud build -> spring cloud build dependencies
-      - spring cloud consul
-
-  - 建议
-    - dependencies 对外 聚合（如 spring boot 和 spring cloud）
-    - parent 对内 继承（如 spring cloud consul 和 spring cloud build）
+- - -
 
 
 
@@ -193,17 +319,7 @@
 
 ### 业务组件 BOM 设计
 
-- 命名 xxx-dependencies
-- 继承或组合基础设施的 BOM
-  - 基础设施依赖管理
-    - 继承或组合开源BOM
-- 主要聚焦于业务组件依赖
-  - 大量业务组件API
-- 缺点
-  - 版本升级缺乏灵活度，臃肿
-  - 通常采用 **snapshot 模式** 升级
-    - 业务 BOM 保持 snapshot 模式，业务组件依赖使用 release 模式（推荐？）
-    - 业务 BOM、业务组件 保持 snapshot 模式
+- 
 
 
 
@@ -227,69 +343,8 @@
 
 
 
-### 标准化项目结构
 
-- API（API工程，定义API接口）
-  - 接口（interfaces）
-    - RPC通讯
-      - Spring cloud OpenFeign 接口
-        - spring-webmvc **可选依赖**
-        - Lombok **可选依赖**
-        - spring-cloud-starter-openfeign **可选依赖**
-        - @FeignClient("${user-serice.name}")  使用占位符方式，易于后续服务拆分
-          - **拆分服务接口升级**
-            - 服务方：老接口 @Deprecated，当没有流量时，即可下线
-            - 服务方：新接口，和老接口并存，同时保证url兼容
-            - 调用方：1、新老接口并存；2、逐步下线老接口服务；3、切换新接口
-      - Apache Dubbo RPC 接口
-        - 依赖 dubbo-common
-        - @DubboService
-    - 业务接口
-      - **通过元注解支持，注意依赖注解，而非API**（可编译通过，运行时可以没有，没有的话只会不识别！）
-  - 模型（model）
-    - RPC 通讯模型
-    - 业务模型
-    - 框架模型
-  - 常量（constants）
-  - 枚举（enums）
-  - 注解（annotation）
-  
-- data（数据存储工程）
 
-  - 类型
-    - SQL
-      - JDBC
-        - Spring jdbc
-        - mybatis
-        - jpa
-
-    - NoSQL
-      - redis
-      - mongo
-      - es
-
-  - 技术栈
-    - Spring data
-
-  - 目录
-    - repository（接口）
-      - extends CrudRepository（实现透明化，sql、nosql）Spring-jpa
-
-- core
-
-  - 技术栈
-    - spring-boot-starter
-
-- web（Web主项目工程）
-  - 目录结构
-    - XxxApplication
-    - controller（实现 API 接口）
-    - exception
-  - 引导类 - main class
-  - 构建 - Spring Boot  Maven Plugin（fat jar）
-    - spirng-boot-maven-plugin
-  - 技术栈
-    - spirng-boot-starter-web
 
 ### 重构
 
@@ -353,17 +408,8 @@
       </plugin>
       ```
 
-  - 如何查看springboot和Springcloud对应版本兼容性
+  - 
 
-    - spring-io/start.spring.io -> start-site -> resources/application.yml
-
-  - 通过Spring boot 插件打 fat jar
-
-    - spring-boot-maven-plugins 添加 repackage
-
-  - 通过Spring boot 插件排除间接依赖
-
-    - spring-boot-maven-plugins 添加 exclude，**打包**的时候删除
 
 
 

@@ -26,3 +26,7 @@
   Preferences | Build, Execution, Deployment | Debugger | Stepping
 
   do not step into the classes；去掉 java.* 和 javax.*
+  
+- idea普通文件夹，下面的 maven project 不识别
+
+  - 右键 pom.xml 选择 Add as a Maven Project
