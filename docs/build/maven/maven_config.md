@@ -21,10 +21,19 @@ settings.xml
 
 # 配置环境变量
 
-设置|关于|高级系统设置|系统变量
+## Maven
+
+设置|系统|关于|高级系统设置|高级|环境变量|系统变量
 
 - MAVEN_HOME    D:\install\apache-maven-3.6.3
 - Path    %MAVEN_HOME%\bin
+
+
+
+## Jdk
+
+- JAVA_HOME    D:\install\jdk\jdk8u492-b09
+- Path    %JAVA_HOME%\bin
 
 
 
