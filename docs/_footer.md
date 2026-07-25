@@ -1,1 +1,1 @@
-Copyright © sciatta.com 2025 all right reserved
+Copyright © sciatta.com 2026 all right reserved
