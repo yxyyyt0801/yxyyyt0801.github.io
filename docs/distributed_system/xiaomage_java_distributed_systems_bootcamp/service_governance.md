@@ -11,14 +11,14 @@
   - Search（ES）
   - Big Data（Hive、HBase）
   - Task、Job、Scheduler
-- 业务共享模块
+- 业务共享模块（中台，业务赋能）
   - 部署
     - 近端（客户端依赖）
     - 远端（云端API调用）
   - 分类
     - 会员
     - 交易
-    - 物流
+    - 物流（供应链）
     - 风控
 - 业务应用
   - 聚焦某个业务领域
@@ -132,17 +132,9 @@ Web主项目工程
   - `<scope>provided</scope>` 类似compile，但不会传递依赖，由外部容器提供API并由外部容器驱动；由外部容器决定是否启用
   - `<optional>true</optional>`  由应用决定是否启用，以及依赖的版本；用错了会导致版本冲突
 
-
-
-## 依赖冲突
-
 - 依赖仲裁，按路径短的原则
   - 不同jar，按依赖路径
   - 同一个jar，按pom中出现的顺序
-
-
-
-## 依赖管理
 
 - 统一在BOM中管理版本 DependencyManagement（也是pom文件）
   - 了解不同版本的兼容情况，通过 `<profile>` 兼容测试 
@@ -175,7 +167,7 @@ Web主项目工程
 
 **优雅升级**三方库，springboot、springcloud
 
-- 基础设施 ，采用不同的`<profile></profile>` 回归测试，通过 `mvn clean verify -P regression` 激活测试用例
+- ==基础设施 ，采用不同的`<profile></profile>` 回归测试，通过 `mvn clean verify -P regression` 激活测试用例==
 - 应用，需要QA介入回归
 - 依赖参考
   - spring cloud consul
