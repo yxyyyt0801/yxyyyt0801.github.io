@@ -124,14 +124,4 @@
     - [Linux命令](tool/linux/linux_command)
   - Nginx
     - [Nginx概述](tool/nginx/nginx_overview)
-- 🎨 绘画
-  - 软件
-    - [Photoshop软件操作](painting/software/photoshop_software_operation)
-  - Krenz系列
-    - [线条训练营](painting/krenz/training_camp_line.md)
-    - [色彩训练营](painting/krenz/training_camp_color.md)
-    - [速写人体训练营](painting/krenz/training_camp_sketch_figure.md)
-    - [Krenz 光影与色彩](painting/krenz/krenz_color.md)
-    - [Krenz 透视与结构](painting/krenz/krenz_perspective.md)
-    - [Krenz 动态与构成](painting/krenz/krenz_composition.md)
 
