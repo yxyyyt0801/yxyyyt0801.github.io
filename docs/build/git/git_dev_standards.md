@@ -36,7 +36,7 @@
 
 ## create develop branch
 
-- main: 0.1.0
+- main: 0.0.0（当前版本小于develop分支版本）
 - develop: 0.1.0-SNAPSHOT
 
 ```shell
@@ -83,9 +83,9 @@ git push origin --delete some-feature
 
 ## Start new release
 
-- main: 0.1.0
-- develop: 0.2.0-SNAPSHOT（马上修改develop分支版本，并行开发）
-- release: 0.2.0
+- main: 0.0.0
+- release: 0.1.0-SNAPSHOT -> release: 0.1.0（修改版本号 & BUG）
+- develop: 0.1.0-SNAPSHOT -> develop: 0.2.0-SNAPSHOT（马上修改develop分支版本，并行开发）
 
 ```shell
 git checkout -b release-0.1.0 develop
@@ -95,7 +95,7 @@ git checkout -b release-0.1.0 develop
 
 ## Finish the release
 
-- main:0.2.0（更新版本，以release分支版本为准）
+- main:0.1.0（更新版本，以release分支版本为准；只合并，没有提交）
 - develop: 0.2.0-SNAPSHOT（冲突，以develop分支版本为准）
 
 ```shell
