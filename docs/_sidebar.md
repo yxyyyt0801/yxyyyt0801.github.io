@@ -97,10 +97,7 @@
 - 🤖 AI
   - openclaw
     - [openclaw概述](ai/openclaw/openclaw_overview)
-- 🐣 项目
-  - CPA
-    - [CPA 调研](project/cpa/cpa_research)
-- 🪇 小程序
+- 📱 小程序
   - uni-app
     - [uni-app问题](applet/uni_app/uni_app_problem)
 - 🛺 工具
@@ -124,4 +121,6 @@
     - [Linux命令](tool/linux/linux_command)
   - Nginx
     - [Nginx概述](tool/nginx/nginx_overview)
+  - MacOS
+    - [MacOS开发环境配置](tool/macos/macos_dev_config)
 
