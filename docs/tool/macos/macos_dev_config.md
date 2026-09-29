@@ -97,3 +97,30 @@ nano ~/.m2/settings.xml
 mvn help:effective-settings | head -30
 ```
 
+
+
+## nvm
+
+切换node版本
+
+```shell
+# 安装 nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+
+# 安装 node 16
+nvm install 16
+
+# 验证
+node -v
+npm -v
+
+# 配置镜像源
+# 原镜像
+# npm config set registry https://registry.npmjs.org/
+# 永久修改
+# 设置淘宝镜像
+npm config set registry https://registry.npmmirror.com
+# 检查镜像源
+npm config get registry
+```
+

@@ -51,3 +51,5 @@
   Git 格式化提交消息插件
   
 - MybatisX
+
+- Tencent Cloud CodeBuddy
