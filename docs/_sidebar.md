@@ -91,6 +91,10 @@
        * [RocketMQ安装部署](component/rocketmq/rocketmq_install)
        * [RocketMQ核心功能原理](component/rocketmq/rocketmq_core)
        * [RocketMQ源码分析](component/rocketmq/rocketmq_code_analysis)
+- 🎉 项目
+  - Goldmine
+    - [Goldmine 详细设计](project/goldmine/goldmine_dd)
+
 - 🍇 分布式架构
   - 小马哥Java分布式训练营
     - [服务治理](distributed_system/xiaomage_java_distributed_systems_bootcamp/service_governance)
