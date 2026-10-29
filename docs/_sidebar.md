@@ -91,19 +91,11 @@
        * [RocketMQ安装部署](component/rocketmq/rocketmq_install)
        * [RocketMQ核心功能原理](component/rocketmq/rocketmq_core)
        * [RocketMQ源码分析](component/rocketmq/rocketmq_code_analysis)
-- 🎉 项目
-  - Goldmine
-    - [Goldmine 详细设计](project/goldmine/goldmine_dd)
-
 - 🍇 分布式架构
+  - Java进阶训练营
+    - [第0期课程](distributed_system/java_bootcamp/0)
   - 小马哥Java分布式训练营
     - [服务治理](distributed_system/xiaomage_java_distributed_systems_bootcamp/service_governance)
-- 🤖 AI
-  - openclaw
-    - [openclaw概述](ai/openclaw/openclaw_overview)
-- 📱 小程序
-  - uni-app
-    - [uni-app问题](applet/uni_app/uni_app_problem)
 - 🛺 工具
   - Docsify
     - [Docsify配置](tool/docsify/docsify_config)
