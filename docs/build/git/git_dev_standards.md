@@ -150,3 +150,35 @@ git tag -a v0.1.1 master
 git push --tags
 ```
 
+
+
+# AI 模块辅助开发
+
+## 单工作区多仓库
+
+```shell
+# GitHub 创建所有仓库（要添加文件；在GitHub上建立 develop 分支）
+goldmine-workspace 工作区
+goldmine-memory 基于规则开发
+goldmine-mono 单体服务
+goldmine-web-admin 管理后台
+
+# 克隆 goldmine-workspace 工作区
+git clone -b develop git@github.com:sciatta/goldmine-workspace.git
+cd goldmine-workspace
+
+# 挂子模块（克隆项目到当前 goldmine-workspace 工作区）
+git submodule add -b develop git@github.com:sciatta/goldmine-memory.git
+git submodule add -b develop git@github.com:sciatta/goldmine-mono.git
+git submodule add -b develop git@github.com:sciatta/goldmine-web-admin.git
+
+# 提交 goldmine-workspace 工作区（GitHub中goldmine-workspace 工作区 存的各个文件夹是快捷方式，点击后会导航到相应的仓库）
+git commit -am "挂载全部子模块"
+git push
+
+# WorkBuddy 打开 goldmine-workspace 工作区
+每次任务前，先读 goldmine-memory/MEMORY.mdxu 
+
+# 后续各个模块分别提交
+```
+
