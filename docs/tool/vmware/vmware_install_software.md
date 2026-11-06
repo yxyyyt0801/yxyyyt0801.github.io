@@ -44,6 +44,36 @@ yum install -y unzip zip
 
 
 
+## SDKMAN
+
+```shell
+# 安装依赖
+sudo yum install -y curl zip unzip git
+
+# 安装sdkman
+curl -s "https://get.sdkman.io" | bash
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# 初始化
+echo 'export SDKMAN_DIR="$HOME/.sdkman"' >> ~/.bashrc
+echo '[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"' >> ~/.bashrc
+
+# 查看
+sdk list java
+ 
+# 安装 java 21
+sdk install java 21.0.12.1-crac+1-zulu
+
+# 仅当前终端（退出失效，调试用）
+sdk use java 21.0.12.1-crac+1-zulu
+
+# 设为用户全局默认（新终端生效）
+sdk default java 21.0.12.1-crac+1-zulu
+
+# 查看当前
+sdk current java
+```
+
 
 
 # 开发软件
